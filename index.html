@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>iFlora | Smart Automation</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+	<canvas id="blob-canvas"></canvas>
+	<div class="cursor-glow" aria-hidden="true"></div>
+	<div class="noise-overlay" aria-hidden="true"></div>
+
+	<header class="site-header">
+		<nav class="nav">
+			<a class="brand" href="#home">
+				<img src="iflora.png" alt="iFlora logo" class="brand-logo" loading="lazy">
+				<span>iFlora</span>
+			</a>
+			<button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+				<span></span>
+				<span></span>
+				<span></span>
+			</button>
+			<ul class="nav-links" role="list">
+				<li><a href="#home">Home</a></li>
+				<li><a href="#features">Features</a></li>
+				<li><a href="#plans">Plans</a></li>
+				<li><a href="#contact">Contact</a></li>
+			</ul>
+		</nav>
+	</header>
+
+	<main>
+		<section class="hero" id="home">
+			<div class="hero-content" data-animate>
+				<p class="eyebrow"><span class="text-shimmer">AI greenhouse intelligence</span></p>
+				<h1 class="gradient-text">Welcome to iFlora</h1>
+				<p class="lede">Smart automation for a greener tomorrow. Control, monitor, and optimize your greenhouse with AI-powered precision.</p>
+				<div class="hero-actions">
+					<a class="btn primary" href="#features">Get Started</a>
+					<a class="btn secondary" href="#plans">See Plans</a>
+				</div>
+			</div>
+		</section>
+
+		<!-- Laptop image between hero and features -->
+		<div class="laptop-image-wrapper">
+			<img src="laptop.png" alt="Laptop showing dashboard" class="laptop-image" loading="lazy">
+		</div>
+
+		<section class="features" id="features">
+			<div class="section-heading" data-animate>
+				<p class="eyebrow">Features</p>
+				<h2>Precision tools for living systems</h2>
+			</div>
+			<div class="feature-grid">
+				<article class="feature-card tilt-card" data-animate>
+					<div class="card-shine"></div>
+					<div class="feature-icon" aria-hidden="true">
+						<svg viewBox="0 0 32 32" role="presentation" focusable="false">
+							<circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="1.5" fill="none" />
+							<path d="M10 18l4-4 4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+						</svg>
+					</div>
+					<h3>Smart Sensor Dashboard</h3>
+					<p>Monitor every bed, canopy, and nutrient stream from a single, intuitive command surface.</p>
+				</article>
+				<article class="feature-card tilt-card" data-animate>
+					<div class="card-shine"></div>
+					<div class="feature-icon" aria-hidden="true">
+						<svg viewBox="0 0 32 32" role="presentation" focusable="false">
+							<path d="M8 12h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+							<path d="M8 20h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+							<circle cx="12" cy="12" r="2" fill="currentColor" />
+							<circle cx="20" cy="20" r="2" fill="currentColor" />
+						</svg>
+					</div>
+					<h3>Automated Irrigation</h3>
+					<p>Let adaptive schedules fine-tune hydration using live soil moisture and evapotranspiration inputs.</p>
+				</article>
+				<article class="feature-card tilt-card" data-animate>
+					<div class="card-shine"></div>
+					<div class="feature-icon" aria-hidden="true">
+						<svg viewBox="0 0 32 32" role="presentation" focusable="false">
+							<rect x="8" y="10" width="16" height="12" rx="6" ry="6" stroke="currentColor" stroke-width="1.5" fill="none" />
+							<path d="M12 16h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+						</svg>
+					</div>
+					<h3>Climate Optimization</h3>
+					<p>Balance humidity, airflow, and lighting with AI predictions that anticipate seasonal shifts.</p>
+				</article>
+				<article class="feature-card tilt-card" data-animate>
+					<div class="card-shine"></div>
+					<div class="feature-icon" aria-hidden="true">
+						<svg viewBox="0 0 32 32" role="presentation" focusable="false">
+							<path d="M8 22c3-4 5-6 8-6s5 2 8 6" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" />
+							<circle cx="16" cy="12" r="3" stroke="currentColor" stroke-width="1.5" fill="none" />
+						</svg>
+					</div>
+					<h3>Real-Time Analytics</h3>
+					<p>Surface actionable KPIs, anomaly alerts, and sustainability metrics in milliseconds.</p>
+				</article>
+			</div>
+		</section>
+
+		<section class="plans" id="plans">
+			<div class="section-heading" data-animate>
+				<p class="eyebrow">Plans</p>
+				<h2>Choose the growth track that fits</h2>
+			</div>
+			<div class="plan-grid">
+				<article class="plan-card tilt-card" data-animate>
+					<div class="card-shine"></div>
+					<h3>Starter</h3>
+					<p class="price">$19<span>/month</span></p>
+					<ul>
+						<li>For 1 greenhouse</li>
+						<li>Basic automation</li>
+					</ul>
+					<a class="btn outline" href="#contact">Join Now</a>
+				</article>
+				<article class="plan-card featured tilt-card" data-animate>
+					<div class="card-shine"></div>
+					<p class="badge">Most Popular</p>
+					<h3>Pro</h3>
+					<p class="price">$49<span>/month</span></p>
+					<ul>
+						<li>Up to 3 greenhouses</li>
+						<li>Smart scheduling</li>
+					</ul>
+					<a class="btn primary" href="#contact">Join Now</a>
+				</article>
+				<article class="plan-card tilt-card" data-animate>
+					<div class="card-shine"></div>
+					<h3>Enterprise</h3>
+					<p class="price custom">Custom pricing</p>
+					<ul>
+						<li>Unlimited greenhouses</li>
+						<li>Analytics dashboard</li>
+						<li>API access</li>
+					</ul>
+					<a class="btn outline" href="#contact">Join Now</a>
+				</article>
+			</div>
+		</section>
+	</main>
+
+	<footer class="footer" id="contact">
+		<div class="footer-shell">
+			<p>© 2026 iFlora. All rights reserved.</p>
+		</div>
+	</footer>
+
+	<script src="script.js"></script>
+</body>
+
+</html>
