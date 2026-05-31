@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="el">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Επικοινωνία | iFlora</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+	<div class="identity-bg" id="identity-bg"></div>
+	<button id="theme-toggle" class="theme-debug-toggle" aria-label="Toggle theme">Switch to Light Mode</button>
+
+	<div class="page-content">
+		<div class="noise-overlay" aria-hidden="true"></div>
+
+		<!-- Navigation -->
+		<nav class="navbar" id="navbar" style="justify-content: flex-start; padding: 1rem 2rem;">
+			<a href="index.html" class="btn primary" style="text-decoration: none;">&larr; Επιστροφή</a>
+		</nav>
+
+		<main style="min-height: 85vh; display: flex; align-items: center; justify-content: center; padding: 2rem; margin-top: 5rem;">
+			<section class="contact-section" data-animate style="width: 100%; max-width: 600px; position: relative; z-index: 10;">
+				<div class="section-heading" style="text-align: center; margin-bottom: 2rem;">
+					<p class="eyebrow">ΕΠΙΚΟΙΝΩΝΙΑ</p>
+					<h2>Στείλτε μας το μήνυμά σας</h2>
+					<p style="margin-top: 1rem; color: var(--text-muted);">Συμπληρώστε τη φόρμα παρακάτω και θα επικοινωνήσουμε μαζί σας το συντομότερο δυνατό.</p>
+				</div>
+				
+				<form class="contact-form" action="mailto:info@iflora.gr" method="post" enctype="text/plain" style="display: flex; flex-direction: column; gap: 1.5rem; background: rgba(255, 255, 255, 0.03); padding: 2.5rem; border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(20px); box-shadow: 0 25px 60px rgba(0,0,0,0.2);">
+					<div class="form-group" style="display: flex; flex-direction: column; text-align: left;">
+						<label for="name" style="margin-bottom: 0.5rem; font-weight: 500; color: var(--text);">Ονοματεπώνυμο</label>
+						<input type="text" id="name" name="name" required placeholder="π.χ. Γιάννης Παπαδόπουλος" style="padding: 1rem; border-radius: 12px; border: 1px solid rgba(175, 208, 154, 0.3); background: rgba(0, 0, 0, 0.2); color: var(--text); font-family: inherit; font-size: 1rem;">
+					</div>
+					<div class="form-group" style="display: flex; flex-direction: column; text-align: left;">
+						<label for="email" style="margin-bottom: 0.5rem; font-weight: 500; color: var(--text);">Email</label>
+						<input type="email" id="email" name="email" required placeholder="π.χ. giannis@example.com" style="padding: 1rem; border-radius: 12px; border: 1px solid rgba(175, 208, 154, 0.3); background: rgba(0, 0, 0, 0.2); color: var(--text); font-family: inherit; font-size: 1rem;">
+					</div>
+					<div class="form-group" style="display: flex; flex-direction: column; text-align: left;">
+						<label for="phone" style="margin-bottom: 0.5rem; font-weight: 500; color: var(--text);">Τηλέφωνο</label>
+						<input type="tel" id="phone" name="phone" placeholder="π.χ. 6900000000" style="padding: 1rem; border-radius: 12px; border: 1px solid rgba(175, 208, 154, 0.3); background: rgba(0, 0, 0, 0.2); color: var(--text); font-family: inherit; font-size: 1rem;">
+					</div>
+					<div class="form-group" style="display: flex; flex-direction: column; text-align: left;">
+						<label for="plan" style="margin-bottom: 0.5rem; font-weight: 500; color: var(--text);">Επιλογή Πλάνου</label>
+						<select id="plan" name="plan" style="padding: 1rem; border-radius: 12px; border: 1px solid rgba(175, 208, 154, 0.3); background: rgba(0, 0, 0, 0.2); color: var(--text); font-family: inherit; font-size: 1rem;">
+							<option value="none">Χωρίς επιλογή (Μόνο Ερώτηση)</option>
+							<option value="Standard Growth">Gold Membership</option>
+							<option value="Elite">Platinum Membership</option>
+						</select>
+					</div>
+					<div class="form-group" style="display: flex; flex-direction: column; text-align: left;">
+						<label for="message" style="margin-bottom: 0.5rem; font-weight: 500; color: var(--text);">Μήνυμα</label>
+						<textarea id="message" name="message" rows="5" required placeholder="Το μήνυμά σας..." style="padding: 1rem; border-radius: 12px; border: 1px solid rgba(175, 208, 154, 0.3); background: rgba(0, 0, 0, 0.2); color: var(--text); font-family: inherit; resize: vertical; font-size: 1rem;"></textarea>
+					</div>
+					<button type="submit" class="btn primary" style="width: 100%; justify-content: center; margin-top: 0.5rem; font-size: 1.1rem;">Αποστολή Email</button>
+				</form>
+			</section>
+		</main>
+
+		<div class="footer-shell" style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 0.5rem; padding: 1rem 0; text-align: center;">
+			<img src="media/iflora2.png" alt="iFlora Logo" style="height: 16px; width: auto; opacity: 0.8;">
+			<p style="color: var(--text-muted); margin: 0; font-size: 0.85rem;">© 2026 iFlora. All rights reserved.</p>
+		</div>
+	</div>
+
+	<script src="script.js"></script>
+	<script>
+		// Ensure background colors adapt for the form based on theme
+		const initFormTheme = () => {
+			const isLight = document.body.classList.contains('light-theme');
+			const form = document.querySelector('.contact-form');
+			const inputs = document.querySelectorAll('.contact-form input, .contact-form textarea, .contact-form select');
+			
+			if (isLight) {
+				form.style.background = 'rgba(0, 0, 0, 0.04)';
+				form.style.borderColor = 'rgba(0, 0, 0, 0.08)';
+				inputs.forEach(input => {
+					input.style.background = 'rgba(255, 255, 255, 0.6)';
+					input.style.borderColor = 'rgba(0, 0, 0, 0.1)';
+				});
+			} else {
+				form.style.background = 'rgba(255, 255, 255, 0.03)';
+				form.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+				inputs.forEach(input => {
+					input.style.background = 'rgba(0, 0, 0, 0.2)';
+					input.style.borderColor = 'rgba(175, 208, 154, 0.3)';
+				});
+			}
+		};
+
+		const themeObserver = new MutationObserver((mutations) => {
+			mutations.forEach((mutation) => {
+				if (mutation.attributeName === 'class') {
+					initFormTheme();
+				}
+			});
+		});
+		
+		themeObserver.observe(document.body, { attributes: true });
+		
+		// Trigger once on load
+		initFormTheme();
+	</script>
+</body>
+
+</html>

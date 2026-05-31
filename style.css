@@ -1,43 +1,207 @@
 /* Laptop image between hero and features */
 .laptop-image-wrapper {
+	position: relative;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin: 0 auto 2.5rem auto;
-	max-width: 100vw;
-	padding: 0 1rem;
+	margin: 0 auto;
+	max-width: 100%;
+	width: 100%;
+	padding: 10rem 1rem 3rem 1rem;
+	/* Reduced bottom padding to pull features closer */
+	overflow: visible;
 }
 
+/* Layer 1: The Smooth Blurred Color Wash (Bottom Layer) */
+.laptop-image-wrapper::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 100vw;
+	height: 65%;
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: cover;
+	z-index: 0;
+	pointer-events: none;
+	background-image: url('media/gm.png');
+	filter: blur(24px);
+	/* Soft, beautiful color wash */
+	-webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+	mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+	transition: background-image 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+	opacity: 0.85;
+}
+
+/* Layer 2: The Sharp, Detailed Core Image (Top Layer) */
+.laptop-image-wrapper::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 100vw;
+	height: 65%;
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: cover;
+	z-index: 1;
+	/* Sits on top of the blurred wash */
+	pointer-events: none;
+	background-image: url('media/gm.png');
+	/* Fades out progressively near the top/bottom edges to reveal the blur underneath */
+	-webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 40%, black 70%, transparent 100%);
+	mask-image: linear-gradient(to bottom, transparent 0%, black 40%, black 70%, transparent 100%);
+	transition: background-image 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+	opacity: 1;
+}
+
+.dark-theme .laptop-image-wrapper::before,
+.dark-theme .laptop-image-wrapper::after {
+	background-image: url('media/gd.png');
+}
 
 .laptop-image {
-  max-width: 900px;
-  width: 100%;
-  height: auto;
-  display: block;
-  margin: 0 auto;
+	position: relative;
+	z-index: 2;
+	max-width: 900px;
+	width: 100%;
+	height: auto;
+	display: block;
+	margin: 0 auto;
+	filter: drop-shadow(0 25px 50px rgba(0, 0, 0, 0.35));
+	transform: translateY(4.5rem);
 }
 
 @media (max-width: 900px) {
-  .laptop-image {
-    max-width: 98vw;
-  }
+	.laptop-image-wrapper {
+		padding: 5rem 1rem 1.5rem 1rem;
+		/* Pull features closer on mobile */
+	}
+
+	.laptop-image {
+		max-width: 94vw;
+		transform: translateY(2.5rem);
+	}
 }
+
 :root {
-  font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #344b30;
-  background-color: #fbfff0;
-  --bg: #fbfff0;
-  --card: #afd096;
-  --muted: #597b5b;
-  --accent-a: #344b30;
-  --accent-b: #597b5b;
-  --accent-c: #afd096;
-  --glow: 0 0 40px #afd09666;
-  --hue: 0deg;
-  /* RGB values for canvas animation (brand green #344b30) */
-  --ar: 52;
-  --ag: 75;
-  --ab: 48;
+	font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+	color: #344b30;
+	background-color: #fbfff0;
+	--bg: #fbfff0;
+	--card: #afd096;
+	--muted: #597b5b;
+	--accent-a: #344b30;
+	--accent-b: #597b5b;
+	--accent-c: #afd096;
+	--glow: 0 0 40px #afd09666;
+	--hue: 0deg;
+	/* Brand Identity Colors */
+	--brand-forest: #2d4b2f;
+	--brand-eucalyptus: #5f8062;
+	--brand-sage: #afd19a;
+	--brand-cream: #f5fae9;
+	--brand-olive: #7f966d;
+}
+
+/* Theme Overrides */
+.dark-theme {
+	/* Swarm Blob Color: #afd096 (RGB: 175, 208, 150) */
+	--ar: 175;
+	--ag: 208;
+	--ab: 150;
+}
+
+/* Identity Background */
+.identity-bg {
+	position: fixed;
+	inset: -28px;
+	z-index: -1;
+	/* Changed from 0 to -1 to be absolutely sure it's behind */
+	pointer-events: none;
+	overflow: hidden;
+	transform: scale(1.02);
+	transition: background 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s ease;
+}
+
+/* Light theme */
+.identity-bg.light {
+	background:
+		linear-gradient(180deg,
+			#d9e9f3 0%,
+			#e5ede8 22%,
+			#f5fae9 46%,
+			#d7e6c2 66%,
+			#a9bf86 84%,
+			#7f966d 100%);
+}
+
+/* Dark theme */
+.identity-bg.dark {
+	background:
+		radial-gradient(ellipse at 24% 18%,
+			rgba(95, 128, 98, 0.12) 0%,
+			transparent 58%),
+		radial-gradient(ellipse at 76% 82%,
+			rgba(45, 75, 47, 0.16) 0%,
+			transparent 64%),
+		linear-gradient(180deg,
+			#0d1723 0%,
+			#0a131c 24%,
+			#07100f 52%,
+			#101b12 78%,
+			#162716 100%);
+}
+
+/* Static stars for dark mode */
+.identity-bg.dark::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	mix-blend-mode: screen;
+	opacity: 0.68;
+	filter: blur(0.25px);
+	-webkit-mask-image: linear-gradient(180deg,
+			#000 0%,
+			#000 24%,
+			rgba(0, 0, 0, 0.42) 44%,
+			transparent 70%);
+	mask-image: linear-gradient(180deg,
+			#000 0%,
+			#000 24%,
+			rgba(0, 0, 0, 0.42) 44%,
+			transparent 70%);
+
+	background-image:
+		radial-gradient(circle at 7% 7%, rgba(235, 246, 255, 0.82) 0 1.2px, transparent 2.4px),
+		radial-gradient(circle at 15% 15%, rgba(210, 230, 255, 0.58) 0 1px, transparent 2.2px),
+		radial-gradient(circle at 24% 8%, rgba(245, 250, 255, 0.74) 0 1.1px, transparent 2.3px),
+		radial-gradient(circle at 33% 22%, rgba(200, 224, 255, 0.42) 0 0.9px, transparent 2px),
+		radial-gradient(circle at 43% 12%, rgba(240, 248, 255, 0.68) 0 1.1px, transparent 2.3px),
+		radial-gradient(circle at 53% 5%, rgba(215, 235, 255, 0.50) 0 0.9px, transparent 2px),
+		radial-gradient(circle at 64% 18%, rgba(245, 250, 255, 0.62) 0 1.1px, transparent 2.3px),
+		radial-gradient(circle at 74% 9%, rgba(205, 228, 255, 0.48) 0 0.9px, transparent 2px),
+		radial-gradient(circle at 86% 17%, rgba(235, 246, 255, 0.54) 0 1px, transparent 2.2px),
+		radial-gradient(circle at 94% 6%, rgba(245, 250, 255, 0.70) 0 1.1px, transparent 2.3px),
+		radial-gradient(circle at 19% 34%, rgba(220, 238, 255, 0.24) 0 0.8px, transparent 1.8px),
+		radial-gradient(circle at 47% 31%, rgba(235, 246, 255, 0.20) 0 0.8px, transparent 1.8px),
+		radial-gradient(circle at 79% 36%, rgba(215, 235, 255, 0.18) 0 0.8px, transparent 1.8px),
+		radial-gradient(circle at 11% 26%, rgba(245, 250, 255, 0.42) 0 0.9px, transparent 2px),
+		radial-gradient(circle at 29% 17%, rgba(215, 235, 255, 0.36) 0 0.8px, transparent 1.9px),
+		radial-gradient(circle at 39% 6%, rgba(235, 246, 255, 0.50) 0 0.9px, transparent 2px),
+		radial-gradient(circle at 58% 29%, rgba(210, 230, 255, 0.26) 0 0.8px, transparent 1.9px),
+		radial-gradient(circle at 69% 4%, rgba(245, 250, 255, 0.54) 0 0.9px, transparent 2px),
+		radial-gradient(circle at 83% 27%, rgba(220, 238, 255, 0.30) 0 0.8px, transparent 1.9px),
+		radial-gradient(circle at 97% 24%, rgba(235, 246, 255, 0.32) 0 0.8px, transparent 1.9px);
+}
+
+.page-content {
+	position: relative;
+	z-index: 1;
 }
 
 * {
@@ -48,7 +212,7 @@
 
 body {
 	min-height: 100vh;
-	background: var(--bg);
+	background: transparent;
 	color: #344b30;
 	line-height: 1.6;
 	text-rendering: optimizeLegibility;
@@ -65,24 +229,7 @@ img {
 	display: block;
 }
 
-/* Cursor spotlight effect */
-.cursor-glow {
-	position: fixed;
-	width: 600px;
-	height: 600px;
-	border-radius: 50%;
-	background: radial-gradient(circle, rgba(77, 232, 255, 0.15) 0%, transparent 60%);
-	pointer-events: none;
-	z-index: 9999;
-	transform: translate(-50%, -50%);
-	opacity: 0;
-	transition: opacity 0.3s ease;
-	mix-blend-mode: screen;
-}
 
-body:hover .cursor-glow {
-	opacity: 1;
-}
 
 /* Noise overlay */
 .noise-overlay {
@@ -97,7 +244,7 @@ body:hover .cursor-glow {
 
 /* Animated gradient text */
 .gradient-text {
-	background: linear-gradient(135deg, var(--accent-a) 0%, var(--accent-b) 50%, var(--accent-c) 100%);
+	background: white;
 	background-size: 200% 200%;
 	-webkit-background-clip: text;
 	background-clip: text;
@@ -105,13 +252,32 @@ body:hover .cursor-glow {
 	animation: gradientShift 8s ease-in-out infinite;
 }
 
+.light-theme .gradient-text {
+	background: linear-gradient(135deg, #1d331e 0%, #2d4b2f 50%, #344b30 100%);
+	background-size: 200% 200%;
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
 @keyframes gradientShift {
-	0%, 100% { background-position: 0% 50%; }
-	50% { background-position: 100% 50%; }
+
+	0%,
+	100% {
+		background-position: 0% 50%;
+	}
+
+	50% {
+		background-position: 100% 50%;
+	}
 }
 
 /* Text shimmer effect */
 .text-shimmer {
+	color: inherit;
+}
+
+.dark-theme .text-shimmer {
 	background: linear-gradient(90deg, var(--accent-a) 0%, #fff 50%, var(--accent-a) 100%);
 	background-size: 200% 100%;
 	-webkit-background-clip: text;
@@ -121,8 +287,13 @@ body:hover .cursor-glow {
 }
 
 @keyframes shimmer {
-	0% { background-position: -100% 0; }
-	100% { background-position: 100% 0; }
+	0% {
+		background-position: -100% 0;
+	}
+
+	100% {
+		background-position: 100% 0;
+	}
 }
 
 /* Card shine effect */
@@ -145,12 +316,23 @@ body:hover .cursor-glow {
 	transform-style: preserve-3d;
 	transition: transform 0.4s cubic-bezier(0.03, 0.98, 0.52, 0.99);
 }
+
+.blob-container {
+	position: relative;
+	flex: 1.5;
+	height: 600px;
+	margin-bottom: 2rem;
+	flex-shrink: 0;
+	z-index: 1;
+	pointer-events: none;
+}
+
 #blob-canvas {
-	position: fixed;
+	position: absolute;
 	inset: 0;
 	width: 100%;
 	height: 100%;
-	z-index: 5;
+	z-index: 1;
 	pointer-events: none;
 }
 
@@ -197,9 +379,11 @@ body:hover .cursor-glow {
 	0% {
 		transform: translate3d(0, 0, 0) scale(1);
 	}
+
 	50% {
 		transform: translate3d(-8%, 6%, 0) scale(1.08);
 	}
+
 	100% {
 		transform: translate3d(0, 0, 0) scale(1);
 	}
@@ -212,6 +396,40 @@ body:hover .cursor-glow {
 	background: rgba(2, 3, 19, 0.72);
 	border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 	z-index: 10;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 60px;
+}
+
+.location-label {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 0.8rem;
+	font-weight: 400;
+	color: rgba(255, 255, 255, 0.6);
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	padding: 0.5rem 1rem;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.03);
+	border: 1px solid rgba(255, 255, 255, 0.05);
+	transition: all 0.3s ease;
+}
+
+.location-label svg {
+	color: var(--brand-sage);
+	opacity: 0.8;
+}
+
+.dark-theme .location-label {
+	background: rgba(255, 255, 255, 0.05);
+	color: rgba(255, 255, 255, 0.8);
+}
+
+.light-theme .location-label {
+	color: rgba(255, 255, 255, 0.9);
 }
 
 .nav {
@@ -228,13 +446,14 @@ body:hover .cursor-glow {
 	display: flex;
 	align-items: center;
 	gap: 0.45rem;
-	font-size: 1.3rem;
+	font-size: 1.6rem;
 	font-weight: 600;
 	letter-spacing: 0.04em;
+	color: #ffffff;
 }
 
 .brand-logo {
-	height: 1.5rem;
+	height: 2.8rem;
 	width: auto;
 	display: block;
 	margin-left: 0.1rem;
@@ -250,13 +469,13 @@ body:hover .cursor-glow {
 .nav-links a {
 	font-size: 0.95rem;
 	font-weight: 300;
-	color: var(--muted);
+	color: #ffffff;
 	transition: color 0.2s ease;
 }
 
 .nav-links a:hover,
 .nav-links a:focus-visible {
-	color: #ffffff;
+	color: #afd096;
 }
 
 .nav-links .ghost {
@@ -288,31 +507,525 @@ body:hover .cursor-glow {
 }
 
 main {
-	max-width: 1200px;
+	max-width: 1500px;
 	margin: 0 auto;
-	padding: clamp(3rem, 7vw, 5rem) clamp(1.5rem, 6vw, 3rem) 4rem;
+	padding: 0 clamp(1.5rem, 6vw, 3rem) 4rem;
 }
 
-main > section + section {
+main>section+section {
 	margin-top: clamp(4rem, 8vw, 6rem);
 }
 
 .hero {
 	min-height: 100vh;
 	display: flex;
+	flex-direction: column;
 	align-items: center;
-	justify-content: center;
-	text-align: center;
+	justify-content: flex-start;
+	gap: 4rem;
 	position: relative;
 	overflow: visible;
-	padding-block: clamp(4rem, 8vw, 8rem);
-	margin-top: -80px;
-	padding-top: calc(80px + clamp(4rem, 8vw, 8rem));
+	padding-bottom: clamp(2rem, 4vw, 4rem);
+
+	/* Reduced padding to move it up */
+}
+
+.hero-top-row,
+.hero-bottom-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 6rem;
+	width: 100%;
+	position: relative;
+}
+
+.hero-bottom-row {
+	align-items: stretch;
+	/* So the glass container matches map height */
+}
+
+.top-right-content {
+	text-align: right;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	/* Right align the items like buttons */
+}
+
+.plots-container {
+	flex: 1.5;
+	min-height: 400px;
+	position: relative;
+	background: rgba(10, 15, 20, 0.6);
+	backdrop-filter: blur(15px);
+	-webkit-backdrop-filter: blur(15px);
+	border-radius: 48px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--text-muted);
+	padding: 2px;
+	/* Space for the "outline" border */
+	overflow: visible;
+	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Animated border wrapper */
+.plots-container::before {
+	content: '';
+	position: absolute;
+	inset: -2px;
+	padding: 2px;
+	/* Extend slightly outside to create the border width */
+	border-radius: 50px;
+	background: conic-gradient(from var(--border-angle),
+			transparent 0%,
+			var(--accent-a) 15%,
+			var(--accent-b) 30%,
+			transparent 50%,
+			var(--accent-c) 75%,
+			var(--accent-a) 100%);
+	animation: border-rotate 4s linear infinite;
+	z-index: -1;
+	mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+	-webkit-mask-composite: xor;
+	mask-composite: exclude;
+	pointer-events: none;
+}
+
+/* Optional extra glow layer */
+.plots-container::after {
+	content: '';
+	position: absolute;
+	inset: -10px;
+	padding: 10px;
+	border-radius: 58px;
+	background: conic-gradient(from var(--border-angle),
+			transparent 0%,
+			rgba(0, 242, 254, 0.2) 15%,
+			rgba(79, 172, 254, 0.2) 30%,
+			transparent 50%,
+			rgba(131, 58, 180, 0.2) 75%,
+			rgba(0, 242, 254, 0.2) 100%);
+	filter: blur(20px);
+	z-index: -2;
+	animation: border-rotate 4s linear infinite;
+	mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+	-webkit-mask-composite: xor;
+	mask-composite: exclude;
+	pointer-events: none;
+	opacity: 0.8;
+}
+
+@property --border-angle {
+	syntax: "<angle>";
+	initial-value: 0deg;
+	inherits: false;
+}
+
+/* Weather Dashboard inside Plots Container */
+.weather-dashboard {
+	width: 100%;
+	padding: 2rem;
+	color: #fff;
+	animation: fadeIn 0.8s ease-out;
+}
+
+.dashboard-city {
+	font-size: 1.4rem;
+	font-weight: 600;
+	margin-bottom: 2rem;
+	color: var(--accent-a);
+	text-align: center;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+}
+
+.metrics-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 1.5rem;
+}
+
+.metric-tile {
+	background: rgba(255, 255, 255, 0.03);
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	border-radius: 16px;
+	padding: 1.5rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	cursor: pointer;
+	position: relative;
+	overflow: hidden;
+}
+
+.metric-tile::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+	transform: translateX(-100%);
+	transition: transform 0.6s;
+}
+
+.metric-tile:hover {
+	background: rgba(255, 255, 255, 0.07);
+	transform: translateY(-5px);
+	border-color: var(--accent-a);
+	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.metric-tile:hover::before {
+	transform: translateX(100%);
+}
+
+.metric-label {
+	font-size: 0.85rem;
+	color: var(--text-muted);
+	font-weight: 500;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.metric-value {
+	font-size: 1.8rem;
+	font-weight: 700;
+	font-family: 'Poppins', sans-serif;
+}
+
+.metric-trend {
+	font-size: 0.75rem;
+	font-weight: 600;
+	padding: 0.25rem 0.6rem;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.05);
+	width: fit-content;
+}
+
+.metric-trend.positive {
+	color: #00f2fe;
+}
+
+.metric-trend.negative {
+	color: #ff4d4d;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+	width: 40px;
+	height: 40px;
+	border: 3px solid rgba(255, 255, 255, 0.1);
+	border-top-color: var(--accent-a);
+	border-radius: 50%;
+	animation: spin 1s linear infinite;
+	margin-bottom: 1rem;
+}
+
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes border-rotate {
+	from {
+		--border-angle: 0deg;
+	}
+
+	to {
+		--border-angle: 360deg;
+	}
 }
 
 .hero-content {
-	max-width: 720px;
+	flex: 1;
+	max-width: 600px;
+	text-align: left;
 	z-index: 1;
+}
+
+.hero-map-column {
+	flex: 2.2;
+	/* Increased to allow map to be bigger */
+	display: flex;
+	flex-direction: row-reverse;
+	/* Places map on the right, panel on the left */
+	justify-content: flex-start;
+	/* Pushes content to the right edge */
+	align-items: flex-start;
+	gap: 2rem;
+	position: relative;
+}
+
+.interactive-map {
+	width: 100%;
+	max-width: 800px;
+	height: auto;
+	filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.2));
+}
+
+.map-region {
+	fill: var(--brand-forest);
+	stroke: rgba(255, 255, 255, 0.1);
+	stroke-width: 1;
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	cursor: pointer;
+	opacity: 0.8;
+}
+
+.map-region:hover {
+	fill: var(--brand-sage);
+	opacity: 1;
+	filter: drop-shadow(0 0 15px var(--brand-sage));
+	transform: scale(1.02);
+}
+
+.map-region.selected {
+	fill: var(--brand-sage);
+	opacity: 1;
+	stroke: #fff;
+	stroke-width: 1.5;
+}
+
+/* Towns List inside Modal */
+.towns-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	overflow-y: auto;
+	flex: 1;
+	padding-right: 0.5rem;
+}
+
+.towns-list::-webkit-scrollbar {
+	width: 6px;
+}
+
+.towns-list::-webkit-scrollbar-track {
+	background: rgba(0, 0, 0, 0.05);
+	border-radius: 4px;
+}
+
+.towns-list::-webkit-scrollbar-thumb {
+	background: var(--brand-sage);
+	border-radius: 4px;
+}
+
+.towns-list li {
+	padding: 0.6rem 0.8rem;
+	margin-bottom: 0.5rem;
+	border-radius: 8px;
+	background: rgba(255, 255, 255, 0.4);
+	color: var(--brand-forest);
+	font-weight: 500;
+	font-size: 0.95rem;
+	display: flex;
+	align-items: center;
+	transition: background 0.2s ease, transform 0.2s ease;
+	cursor: default;
+}
+
+.dark-theme .towns-list li {
+	background: rgba(255, 255, 255, 0.05);
+	color: #e5ede8;
+}
+
+.towns-list li:hover {
+	background: rgba(255, 255, 255, 0.8);
+	transform: translateX(4px);
+}
+
+.dark-theme .towns-list li:hover {
+	background: rgba(255, 255, 255, 0.15);
+}
+
+.towns-list li.selected-town {
+	background: rgba(255, 255, 255, 0.9);
+	transform: translateX(6px);
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+	font-weight: 600;
+	border-left: 3px solid var(--brand-forest);
+}
+
+.dark-theme .towns-list li.selected-town {
+	background: rgba(255, 255, 255, 0.25);
+	border-left: 3px solid var(--brand-sage);
+}
+
+.towns-list li.major-town {
+	border-left: 3px solid var(--brand-olive);
+}
+
+.towns-list li.empty-state {
+	background: transparent;
+	color: var(--muted);
+	font-weight: 400;
+	font-size: 0.9rem;
+	text-align: center;
+	padding: 2rem 1rem;
+}
+
+/* ==========================================================================
+   DEVICE RESPONSIVENESS & ALIGNMENT UPGRADES (Good Alignment everywhere)
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+
+	/* 1. Stacking the Hero Row Layouts */
+	.hero-top-row {
+		flex-direction: column-reverse !important;
+		gap: 3rem !important;
+		text-align: center !important;
+		align-items: center !important;
+		justify-content: center !important;
+	}
+
+	.hero-bottom-row {
+		flex-direction: column !important;
+		gap: 4rem !important;
+		align-items: center !important;
+		justify-content: center !important;
+	}
+
+	/* Center Top Row Text and Alignments */
+	.top-right-content {
+		text-align: center !important;
+		align-items: center !important;
+		justify-content: center !important;
+		max-width: 100% !important;
+	}
+
+	.hero-content {
+		text-align: center !important;
+		align-items: center !important;
+		max-width: 100% !important;
+	}
+
+	.hero .lede {
+		margin-inline: auto !important;
+		text-align: center !important;
+	}
+
+	.hero-actions {
+		justify-content: center !important;
+		width: 100% !important;
+		gap: 1.2rem !important;
+	}
+
+	/* 2. Particle Canvas Blob Mobile Calibration */
+	.blob-container {
+		width: 100% !important;
+		max-width: 460px !important;
+		height: 380px !important;
+		margin: 0 auto !important;
+	}
+
+	/* 3. Greece Map Large Scaling on Tablets/Mobile */
+	.hero-map-column {
+		width: 100% !important;
+		max-width: 100% !important;
+		flex-direction: column !important;
+		align-items: center !important;
+		justify-content: center !important;
+		gap: 1.5rem !important;
+	}
+
+	.map-wrapper {
+		width: 100% !important;
+		align-items: center !important;
+	}
+
+	.interactive-map {
+		max-width: 680px !important;
+		/* Scale Greece map up heavily on mobile/tablet */
+		width: 95% !important;
+	}
+
+	/* 4. Dashboard Glass Panel Mobile Aligned */
+	.plots-container {
+		width: 100% !important;
+		max-width: 780px !important;
+		min-height: auto !important;
+		margin: 0 auto !important;
+	}
+
+	/* 5. Feature Card Spacing to Prevent Floating Icon Overlaps on Mobile/Tablet Stacks */
+	.feature-grid {
+		row-gap: 5.5rem !important;
+	}
+}
+
+@media (max-width: 600px) {
+
+	/* 5. Mobile Phone Specific Swarm Stacking (Swarm FIRST at the top, Welcome BELOW) */
+	.hero-top-row {
+		flex-direction: column !important;
+		gap: 2rem !important;
+	}
+
+	.blob-container {
+		height: 280px !important;
+		/* Scaled down on small phone screens so Welcome text fits below */
+		max-width: 340px !important;
+	}
+
+	/* 6. Metrics Grid Alignment Fix for Small Phones */
+	.metrics-grid {
+		grid-template-columns: 1fr !important;
+		/* Stack tiles to prevent text squishing */
+		gap: 1.2rem !important;
+	}
+
+	.weather-dashboard {
+		padding: 1.2rem !important;
+	}
+
+	.weather-dashboard .dashboard-city {
+		font-size: 1.35rem !important;
+		margin-bottom: 1rem !important;
+	}
+
+	.metric-tile {
+		padding: 1.2rem !important;
+	}
+
+	.metric-tile .metric-value {
+		font-size: 1.9rem !important;
+	}
+
+	.hero h1 {
+		font-size: clamp(2.2rem, 8vw, 3rem) !important;
+	}
+}
+
+.hero .hero-actions {
+	justify-content: flex-start;
+}
+
+@media (max-width: 960px) {
+	.hero .hero-actions {
+		justify-content: center;
+	}
 }
 
 .hero-glow {
@@ -358,10 +1071,13 @@ main > section + section {
 }
 
 @keyframes floatGlowC {
-	0%, 100% {
+
+	0%,
+	100% {
 		transform: translate(-50%, -50%) translate3d(0, 0, 0) scale(1);
 		opacity: 0.6;
 	}
+
 	50% {
 		transform: translate(-50%, -50%) translate3d(8%, -10%, 0) scale(1.15);
 		opacity: 0.75;
@@ -369,18 +1085,23 @@ main > section + section {
 }
 
 @keyframes floatGlowA {
-	0%, 100% {
+
+	0%,
+	100% {
 		transform: translate3d(0, 0, 0) scale(1);
 		opacity: 0.6;
 	}
+
 	25% {
 		transform: translate3d(5%, -8%, 0) scale(1.08);
 		opacity: 0.7;
 	}
+
 	50% {
 		transform: translate3d(-3%, -12%, 0) scale(1.02);
 		opacity: 0.55;
 	}
+
 	75% {
 		transform: translate3d(-8%, -4%, 0) scale(1.1);
 		opacity: 0.65;
@@ -388,14 +1109,18 @@ main > section + section {
 }
 
 @keyframes floatGlowB {
-	0%, 100% {
+
+	0%,
+	100% {
 		transform: translate3d(0, 0, 0) scale(1);
 		opacity: 0.55;
 	}
+
 	33% {
 		transform: translate3d(-6%, 10%, 0) scale(1.12);
 		opacity: 0.7;
 	}
+
 	66% {
 		transform: translate3d(4%, 6%, 0) scale(0.95);
 		opacity: 0.5;
@@ -450,10 +1175,16 @@ main > section + section {
 }
 
 .btn.primary {
-	background: linear-gradient(135deg, rgba(77, 232, 255, 0.5) 0%, rgba(141, 99, 255, 0.5) 100%) border-box;
-	border: 1px solid rgba(77, 232, 255, 0.3);
-	color: #f7fbff;
-	box-shadow: var(--glow);
+	background: linear-gradient(135deg, var(--brand-sage) 0%, var(--brand-olive) 100%) border-box;
+	border: 1px solid rgba(175, 208, 154, 0.4);
+	color: #ffffff;
+	box-shadow: 0 10px 25px rgba(45, 75, 47, 0.2);
+}
+
+.dark-theme .btn.primary {
+	background: linear-gradient(135deg, var(--brand-eucalyptus) 0%, var(--brand-forest) 100%) border-box;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .btn.secondary {
@@ -478,11 +1209,11 @@ main > section + section {
 .btn:hover,
 .btn:focus-visible {
 	transform: translateY(-3px) scale(1.02);
-	box-shadow: 0 24px 50px rgba(77, 232, 255, 0.3);
+	box-shadow: 0 24px 50px rgba(45, 75, 47, 0.15);
 }
 
 .btn.primary:hover {
-	box-shadow: 0 0 20px rgba(77, 232, 255, 0.5), 0 30px 60px rgba(77, 232, 255, 0.25);
+	box-shadow: 0 0 25px rgba(175, 208, 154, 0.4), 0 30px 60px rgba(45, 75, 47, 0.2);
 }
 
 
@@ -490,7 +1221,8 @@ main > section + section {
 .section-heading {
 	text-align: center;
 	max-width: 620px;
-	margin: 0 auto 3rem;
+	margin: 0 auto 5.5rem !important;
+	/* Added spacious breathing margin below the title */
 }
 
 .section-heading h2 {
@@ -499,7 +1231,8 @@ main > section + section {
 }
 
 .features {
-	padding-block: 5rem;
+	padding-block: 0.5rem 5rem;
+	/* Drastically reduced top padding to bring content closer */
 }
 
 .feature-grid {
@@ -515,33 +1248,62 @@ main > section + section {
 	border: 1px solid #597b5b33;
 	backdrop-filter: blur(8px);
 	transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+	text-align: center !important;
+	display: flex !important;
+	flex-direction: column !important;
+	align-items: center !important;
+	justify-content: center !important;
 }
 
-.feature-card:hover {
+.feature-card:hover,
+.feature-card.active-feature {
 	transform: translateY(-8px) scale(1.01);
 	border-color: #597b5b;
 	box-shadow: 0 0 30px #afd09655, 0 25px 50px #344b3011;
 }
 
 .feature-icon {
-	width: 48px;
-	height: 48px;
-	border-radius: 16px;
-	background: #afd09655;
-	border: 1px solid #597b5b88;
-	margin-bottom: 1.25rem;
+	width: 64px;
+	/* Made the icon containers slightly larger */
+	height: 64px;
+	/* Made the icon containers slightly larger */
+	background: transparent !important;
+	/* Removed outer container background */
+	border: none !important;
+	/* Removed outer container border */
+	box-shadow: none !important;
+	/* Removed outer container box shadow */
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	color: var(--accent-a);
+	position: absolute !important;
+	/* Float entirely outside of the container above the top border! */
+	top: 0 !important;
+	left: 50% !important;
+	transform: translate(-50%, -130%) !important;
+	/* Shifted completely outside above the top border edge with a 15px gap */
+	z-index: 5 !important;
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.feature-icon svg {
-	width: 26px;
-	height: 26px;
+.feature-icon svg,
+.feature-icon img {
+	width: 53px;
+	/* Made the vector icons themselves larger */
+	height: 53px;
+	/* Made the vector icons themselves larger */
+	transition: filter 0.35s ease;
+}
+
+.feature-card:hover .feature-icon img,
+.feature-card.active-feature .feature-icon img {
+	filter: drop-shadow(0 0 10px #afd096);
 }
 
 .feature-card h3 {
+	margin-top: 1.2rem !important;
+	/* Perfect spacing spacer for fully outside floating icon */
 	margin-bottom: 0.6rem;
 	font-size: 1.15rem;
 }
@@ -550,8 +1312,204 @@ main > section + section {
 	color: var(--muted);
 }
 
+/* ==========================================================================
+   INTERACTIVE WIDGETS & MICRO-ANIMATIONS (Features Section)
+   ========================================================================== */
+
+/* 1. Custom Interactive Toggle Switch */
+.interactive-switch-icon {
+	width: 64px !important;
+	/* Scaled switch wrapper container to match */
+	height: 64px !important;
+	/* Scaled switch wrapper container to match */
+	cursor: pointer;
+}
+
+.custom-switch-track {
+	width: 24px;
+	/* Scaled switch track width */
+	height: 44px;
+	/* Scaled switch track height */
+	background: rgba(89, 123, 91, 0.35);
+	border-radius: 99px;
+	position: relative;
+	padding: 2px;
+	transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+	border: 1.5px solid rgba(89, 123, 91, 0.45);
+}
+
+.custom-switch-knob {
+	width: 16px;
+	/* Scaled switch knob diameter */
+	height: 16px;
+	/* Scaled switch knob diameter */
+	background: #f0f7f1;
+	border-radius: 50%;
+	position: absolute;
+	bottom: 3px;
+	left: 2px;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+	transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Switch Knob goes from down to up on card hover! */
+.feature-card:hover .custom-switch-track,
+.feature-card.active-feature .custom-switch-track {
+	background: rgba(175, 208, 150, 0.7);
+	border-color: var(--accent-a, #344b30);
+}
+
+.feature-card:hover .custom-switch-knob,
+.feature-card.active-feature .custom-switch-knob {
+	transform: translateY(-22px);
+	/* Shift knob higher proportionally in larger track */
+	background: #ffffff;
+	box-shadow: 0 0 10px rgba(175, 208, 150, 0.95), 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+/* Container Scale Hover Feedback */
+.feature-card:hover .feature-icon,
+.feature-card.active-feature .feature-icon {
+	background: transparent !important;
+	/* Keep background removed on hover */
+	border: none !important;
+	/* Keep border removed on hover */
+	transform: translate(-50%, -130%) scale(1.15) !important;
+	/* Retains fully outside offset while scaling up */
+}
+
+/* 2. Automated Irrigation Growth Lamp Glow */
+.feather-lamp {
+	transition: color 0.35s ease, filter 0.35s ease;
+}
+
+.light-ray {
+	transition: stroke 0.35s ease, stroke-width 0.35s ease, stroke-opacity 0.35s ease;
+}
+
+.feature-card:hover .feather-lamp,
+.feature-card.active-feature .feather-lamp {
+	color: #e2cc3f !important;
+	filter: drop-shadow(0 0 8px rgba(226, 204, 63, 0.8));
+}
+
+.feature-card:hover .light-ray,
+.feature-card.active-feature .light-ray {
+	stroke: #e2cc3f !important;
+	stroke-opacity: 1 !important;
+	stroke-width: 2.5px !important;
+}
+
+/* 3. Climate Optimization Thermometer Rise */
+.feather-thermometer {
+	transition: color 0.35s ease, filter 0.35s ease;
+}
+
+.mercury-line {
+	stroke-dasharray: 10;
+	stroke-dashoffset: 10;
+	transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.35s ease;
+}
+
+.mercury-bulb {
+	transition: fill 0.35s ease;
+}
+
+.feature-card:hover .feather-thermometer,
+.feature-card.active-feature .feather-thermometer {
+	color: #ff5722 !important;
+	filter: drop-shadow(0 0 8px rgba(255, 87, 34, 0.7));
+}
+
+.feature-card:hover .mercury-line,
+.feature-card.active-feature .mercury-line {
+	stroke: #ff5722 !important;
+	stroke-dashoffset: 0;
+}
+
+.feature-card:hover .mercury-bulb,
+.feature-card.active-feature .mercury-bulb {
+	fill: #ff5722 !important;
+}
+
+/* 4. Real-Time Analytics Dashboard Graph Draw */
+.feather-analytics {
+	transition: color 0.35s ease, filter 0.35s ease;
+}
+
+.bar {
+	transform-origin: bottom;
+	transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), fill 0.35s ease;
+}
+
+.feature-card:hover .feather-analytics,
+.feature-card.active-feature .feather-analytics {
+	color: #2563eb !important;
+	filter: drop-shadow(0 0 10px rgba(37, 99, 235, 0.8));
+}
+
+.feature-card:hover .bar-1,
+.feature-card.active-feature .bar-1 {
+	transform: scaleY(1.3);
+}
+
+.feature-card:hover .bar-2,
+.feature-card.active-feature .bar-2 {
+	transform: scaleY(1.45);
+}
+
+.feature-card:hover .bar-3,
+.feature-card.active-feature .bar-3 {
+	transform: scaleY(1.6);
+}
+
 .plans {
 	padding-block: 4rem 5rem;
+}
+
+/* Theme visibility toggles for all logo instances */
+.light-logo {
+	display: block;
+}
+.dark-logo {
+	display: none;
+}
+
+.light-theme .dark-logo {
+	display: none !important;
+}
+
+.light-theme .light-logo {
+	display: block !important;
+}
+
+.dark-theme .light-logo {
+	display: none !important;
+}
+
+.dark-theme .dark-logo {
+	display: block !important;
+}
+
+/* Plan Card Logo Styling */
+.plan-card-logo-container {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	margin-bottom: 1.5rem;
+	width: 100%;
+}
+
+.plan-card-logo {
+	height: 4.5rem;
+	width: auto;
+	opacity: 0.9;
+	transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.plan-card:hover .plan-card-logo {
+	transform: scale(1.06);
+	opacity: 1;
 }
 
 .plan-grid {
@@ -561,7 +1519,10 @@ main > section + section {
 }
 
 .plan-card {
-	padding: 2.5rem 2rem;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	padding: 0 !important; /* Managed by internal zones */
 	border-radius: 28px;
 	background: #afd096;
 	border: 1px solid #597b5b55;
@@ -575,9 +1536,10 @@ main > section + section {
 	content: "";
 	position: absolute;
 	inset: -40% 0 0 0;
-	background: linear-gradient(120deg, rgba(77, 232, 255, 0.2), rgba(77, 224, 181, 0.15), transparent);
+	background: linear-gradient(120deg, rgba(175, 208, 154, 0.2), rgba(95, 128, 98, 0.15), transparent);
 	filter: blur(60px);
 	opacity: 0;
+	pointer-events: none;
 	transition: opacity 0.4s ease;
 }
 
@@ -586,7 +1548,7 @@ main > section + section {
 }
 
 .plan-card:hover {
-	transform: translateY(-12px) scale(1.02);
+	transform: translateY(-8px) scale(1.02);
 	border-color: #344b30;
 	box-shadow: 0 0 35px #afd09655, 0 40px 90px #344b3011;
 }
@@ -594,6 +1556,15 @@ main > section + section {
 .plan-card h3 {
 	font-size: 1.4rem;
 	margin-bottom: 0.4rem;
+	position: relative;
+	z-index: 2;
+}
+
+.plan-card .btn {
+	position: relative;
+	z-index: 2;
+	margin-top: auto;
+	align-self: flex-start;
 }
 
 .plan-card .price {
@@ -607,17 +1578,35 @@ main > section + section {
 	color: var(--muted);
 }
 
-.plan-card .price.custom {
-	font-size: 1.6rem;
+.plan-card .price.contact-pricing {
+	font-size: 1.8rem;
+	font-weight: 600;
+	margin-bottom: 1.5rem;
+}
+
+.plan-card .price.contact-pricing .contact-link {
+	color: var(--accent-a);
+	text-decoration: none;
+	border-bottom: 2px solid var(--accent-a);
+	padding-bottom: 2px;
+	transition: all 0.25s ease;
+	display: inline-block;
+}
+
+.plan-card .price.contact-pricing .contact-link:hover {
+	color: var(--brand-forest);
+	border-bottom-color: var(--brand-forest);
+	transform: translateY(-1px);
 }
 
 .plan-card ul {
-	list-style: none;
+	list-style: disc;
+	padding-left: 1.5rem;
 	margin-bottom: 2rem;
 	color: var(--muted);
 }
 
-.plan-card li + li {
+.plan-card li+li {
 	margin-top: 0.4rem;
 }
 
@@ -637,7 +1626,7 @@ main > section + section {
 
 .footer {
 	border-top: 1px solid #597b5b33;
-	background: #afd096;
+	background: transparent;
 }
 
 .footer-shell {
@@ -659,14 +1648,33 @@ main > section + section {
 	transform: translateY(0);
 }
 
-.feature-card[data-animate]:nth-child(1) { transition-delay: 0s; }
-.feature-card[data-animate]:nth-child(2) { transition-delay: 0.08s; }
-.feature-card[data-animate]:nth-child(3) { transition-delay: 0.16s; }
-.feature-card[data-animate]:nth-child(4) { transition-delay: 0.24s; }
+.feature-card[data-animate]:nth-child(1) {
+	transition-delay: 0s;
+}
 
-.plan-card[data-animate]:nth-child(1) { transition-delay: 0s; }
-.plan-card[data-animate]:nth-child(2) { transition-delay: 0.1s; }
-.plan-card[data-animate]:nth-child(3) { transition-delay: 0.2s; }
+.feature-card[data-animate]:nth-child(2) {
+	transition-delay: 0.08s;
+}
+
+.feature-card[data-animate]:nth-child(3) {
+	transition-delay: 0.16s;
+}
+
+.feature-card[data-animate]:nth-child(4) {
+	transition-delay: 0.24s;
+}
+
+.plan-card[data-animate]:nth-child(1) {
+	transition-delay: 0s;
+}
+
+.plan-card[data-animate]:nth-child(2) {
+	transition-delay: 0.1s;
+}
+
+.plan-card[data-animate]:nth-child(3) {
+	transition-delay: 0.2s;
+}
 
 @media (max-width: 900px) {
 	.nav-links {
@@ -707,4 +1715,560 @@ main > section + section {
 		width: 100%;
 		text-align: center;
 	}
+}
+
+/* Debug Theme Toggle */
+.theme-debug-toggle {
+	position: fixed;
+	top: 1.5rem;
+	right: 1.5rem;
+	z-index: 10000;
+	width: 44px;
+	height: 44px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(45, 75, 47, 0.4);
+	color: white;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 50%;
+	cursor: pointer;
+	backdrop-filter: blur(12px);
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+	transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease, border-color 0.2s ease;
+}
+
+.theme-debug-toggle:hover {
+	transform: scale(1.1) rotate(12deg);
+	background: rgba(45, 75, 47, 0.7);
+	border-color: rgba(255, 255, 255, 0.3);
+}
+
+.dark-theme .theme-debug-toggle {
+	background: rgba(255, 255, 255, 0.08);
+	border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-theme .theme-debug-toggle:hover {
+	background: rgba(255, 255, 255, 0.15);
+}
+
+/* --- Modal Styles --- */
+.modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: rgba(0, 0, 0, 0.4);
+	backdrop-filter: blur(8px);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+	opacity: 1;
+	transition: opacity 0.3s ease;
+}
+
+.modal-overlay.hidden {
+	opacity: 0;
+	pointer-events: none;
+}
+
+.modal-content {
+	background: var(--card);
+	padding: 2.5rem 2rem 2rem 2rem;
+	border-radius: 16px;
+	width: 90%;
+	max-width: 400px;
+	position: relative;
+	transform: translateY(0) scale(1);
+	transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+	border: 1px solid rgba(89, 123, 91, 0.2);
+}
+
+.modal-overlay.hidden .modal-content {
+	transform: translateY(20px) scale(0.95);
+}
+
+.dark-theme .modal-content {
+	background: rgba(16, 27, 18, 0.95);
+	border-color: rgba(255, 255, 255, 0.1);
+}
+
+.modal-close {
+	position: absolute;
+	top: 1rem;
+	right: 1.2rem;
+	background: transparent;
+	border: none;
+	font-size: 1.8rem;
+	cursor: pointer;
+	color: var(--muted);
+	transition: color 0.2s ease;
+	line-height: 1;
+}
+
+.modal-close:hover {
+	color: var(--text);
+}
+
+.modal-body h3 {
+	color: var(--accent-a);
+	margin-bottom: 0.8rem;
+	font-size: 1.5rem;
+}
+
+.dark-theme .modal-body h3 {
+	color: #fff;
+}
+
+.modal-body p {
+	color: var(--text);
+	font-size: 1rem;
+	line-height: 1.5;
+}
+
+/* ==========================================================================
+   ENHANCED TYPOGRAPHY, BUTTONS, & CONTAINERS (Bigger & More Intense)
+   ========================================================================== */
+
+/* 1. Global Typography Intensity */
+body {
+	font-size: 1.15rem !important;
+	font-weight: 450 !important;
+}
+
+.light-theme {
+	color: #1e301f !important;
+	/* Bolder green text color in light theme */
+}
+
+.dark-theme {
+	color: #f0f7f1 !important;
+	/* Crisper, high-contrast text color in dark theme */
+}
+
+/* 2. Intense Headings Scale */
+.hero h1 {
+	font-size: clamp(3.6rem, 8.5vw, 5.8rem) !important;
+	font-weight: 800 !important;
+	letter-spacing: -0.03em !important;
+	line-height: 1.05 !important;
+}
+
+.hero .lede {
+	font-size: 1.35rem !important;
+	font-weight: 500 !important;
+	max-width: 52ch !important;
+	line-height: 1.8 !important;
+	opacity: 0.95 !important;
+}
+
+.section-heading h2 {
+	font-size: clamp(2.4rem, 5vw, 3.6rem) !important;
+	font-weight: 800 !important;
+	letter-spacing: -0.02em !important;
+}
+
+.section-heading .eyebrow {
+	font-size: 0.95rem !important;
+	font-weight: 700 !important;
+	letter-spacing: 0.5em !important;
+}
+
+/* 3. Component Details Scale */
+.feature-card h3 {
+	font-size: 1.45rem !important;
+	font-weight: 750 !important;
+	margin-bottom: 0.8rem !important;
+}
+
+.feature-card p {
+	font-size: 1.15rem !important;
+	line-height: 1.75 !important;
+	font-weight: 450 !important;
+}
+
+.plan-card h3 {
+	font-size: 1.85rem !important;
+	font-weight: 800 !important;
+	margin-bottom: 0.6rem !important;
+}
+
+.plan-card ul li {
+	font-size: 1.2rem !important;
+	font-weight: 550 !important;
+	margin-bottom: 0.6rem !important;
+}
+
+.plan-card .badge {
+	font-size: 0.85rem !important;
+	font-weight: 700 !important;
+	letter-spacing: 0.4em !important;
+}
+
+/* 4. Highly Intense Containers & Cards */
+.feature-card {
+	padding: 2.5rem !important;
+	border-radius: 28px !important;
+	border: 2px solid rgba(89, 123, 91, 0.35) !important;
+	backdrop-filter: blur(18px) !important;
+	box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15) !important;
+}
+
+.feature-card:hover {
+	border-color: var(--accent-a, #344b30) !important;
+	box-shadow: 0 0 35px rgba(175, 208, 150, 0.45), 0 30px 60px rgba(52, 75, 48, 0.18) !important;
+}
+
+.plan-card {
+	padding: 0 !important;
+	border-radius: 36px !important;
+	border: 2.5px solid rgba(89, 123, 91, 0.45) !important;
+	box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25) !important;
+}
+
+.plan-card.featured {
+	border-color: var(--accent-a, #344b30) !important;
+	border-width: 3.5px !important;
+}
+
+.plots-container {
+	padding: 6px !important;
+	border-radius: 56px !important;
+	backdrop-filter: blur(25px) !important;
+	box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Update concentric border radii for plots container */
+.plots-container::before {
+	border-radius: 58px !important;
+}
+
+.plots-container::after {
+	border-radius: 66px !important;
+}
+
+/* 5. Bigger & Bold Buttons */
+.btn {
+	padding: 1.2rem 2.8rem !important;
+	font-size: 1.15rem !important;
+	font-weight: 650 !important;
+	letter-spacing: 0.05em !important;
+	border-width: 2px !important;
+	box-shadow: 0 12px 30px rgba(45, 75, 47, 0.25) !important;
+}
+
+.btn:hover {
+	transform: translateY(-4px) scale(1.03) !important;
+	box-shadow: 0 20px 45px rgba(45, 75, 47, 0.35) !important;
+}
+
+/* 6. Larger & High Contrast Weather Insides */
+.weather-dashboard .dashboard-city {
+	font-size: 1.65rem !important;
+	font-weight: 750 !important;
+	margin-bottom: 1.2rem !important;
+}
+
+.metric-tile {
+	padding: 1.6rem !important;
+	border-radius: 22px !important;
+	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+}
+
+.metric-tile .metric-label {
+	font-size: 1.05rem !important;
+	font-weight: 650 !important;
+	letter-spacing: 0.06em !important;
+	text-transform: uppercase !important;
+}
+
+.metric-tile .metric-value {
+	font-size: 2.3rem !important;
+	font-weight: 800 !important;
+	margin-block: 0.4rem !important;
+}
+
+.metric-tile .metric-trend {
+	font-size: 0.95rem !important;
+	font-weight: 650 !important;
+}
+
+/* ==========================================================================
+   THEME-DEPENDENT HEADING COLORS
+   - Light Theme: Vibrant forest green for high contrast, legibility and brand vibe.
+   - Dark Theme: Crisp pristine white for modern, emissive contrast.
+   ========================================================================== */
+
+/* Light Theme Main Headings */
+.light-theme h1:not(.gradient-text),
+.light-theme h2,
+.light-theme h3,
+.light-theme h4,
+.light-theme .modal-body h3,
+.light-theme #modal-region-name,
+.light-theme #hist-modal-title {
+	color: #1b3c1e !important;
+}
+
+/* Dark Theme Main Headings */
+.dark-theme h1:not(.gradient-text),
+.dark-theme h2,
+.dark-theme h3,
+.dark-theme h4,
+.dark-theme .modal-body h3,
+.dark-theme #modal-region-name,
+.dark-theme #hist-modal-title {
+	color: #ffffff !important;
+}
+
+/* Fix standard plan list items color in light theme for legibility */
+.light-theme .plan-card ul {
+	color: #1e301f !important;
+}
+
+.light-theme .plan-card .price.contact-pricing .contact-link {
+	color: #1b3c1e !important;
+	border-bottom-color: #1b3c1e !important;
+}
+
+.light-theme .plan-card .price.contact-pricing .contact-link:hover {
+	color: #2d4b2f !important;
+	border-bottom-color: #2d4b2f !important;
+}
+
+/* ==========================================================================
+   IMAGE THEME TOGGLES & EFFECTS
+   ========================================================================== */
+
+/* Light/Dark Image Toggles */
+.light-theme-img { display: block; }
+.dark-theme-img { display: none; }
+
+.light-theme .dark-theme-img { display: none !important; }
+.light-theme .light-theme-img { display: block !important; }
+
+.dark-theme .light-theme-img { display: none !important; }
+.dark-theme .dark-theme-img { display: block !important; }
+
+/* Phone Bottom Blur/Fade Mask */
+.phone-mockup {
+	-webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 100%);
+	mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 100%);
+}
+
+/* Plan Cards Background Blur */
+.plan-card-bg {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 100%;
+	z-index: 0;
+	background-size: auto 100%;
+	background-repeat: no-repeat;
+	opacity: 0.4;
+	filter: blur(3px);
+	pointer-events: none;
+}
+.plan-bg-growth {
+	right: 0;
+	background-image: url('media/iflorabh.png');
+	background-position: right center;
+}
+.plan-bg-elite {
+	left: 0;
+	background-image: url('media/ifloraph.png');
+	background-position: left center;
+}
+
+/* Make sure plan card text content remains above the blurred background */
+.plan-card ul, .plan-card .price, .plan-card .badge, .plan-card-logo-container {
+	position: relative;
+	z-index: 2;
+}
+
+/* Weather Dashboard Light Theme Adapts */
+.light-theme .weather-dashboard,
+.light-theme .weather-dashboard .metric-label,
+.light-theme .weather-dashboard .metric-value,
+.light-theme .weather-dashboard .dashboard-city {
+	color: #1b3c1e !important;
+}
+
+.dark-theme .weather-dashboard,
+.dark-theme .weather-dashboard .metric-label,
+.dark-theme .weather-dashboard .metric-value,
+.dark-theme .weather-dashboard .dashboard-city {
+	color: #ffffff !important;
+}
+
+.light-theme .metric-tile {
+	background: rgba(255, 255, 255, 0.85) !important;
+	border-color: rgba(89, 123, 91, 0.25) !important;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
+	backdrop-filter: blur(12px) !important;
+}
+
+.light-theme .metric-tile:hover {
+	background: rgba(255, 255, 255, 1) !important;
+	border-color: rgba(89, 123, 91, 0.6) !important;
+	box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12) !important;
+}
+
+.dark-theme .metric-tile {
+	background: rgba(255, 255, 255, 0.03) !important;
+	border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.dark-theme .metric-tile:hover {
+	background: rgba(255, 255, 255, 0.07) !important;
+	border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.light-theme .metric-tile .metric-trend {
+	color: #597b5b !important;
+}
+.light-theme .metric-tile .metric-trend.positive {
+	color: #2e7d32 !important;
+}
+.light-theme .metric-tile .metric-trend.negative {
+	color: #c62828 !important;
+}
+
+.dark-theme .metric-tile .metric-trend {
+	color: #8da48e !important;
+}
+.dark-theme .metric-tile .metric-trend.positive {
+	color: #4caf50 !important;
+}
+.dark-theme .metric-tile .metric-trend.negative {
+	color: #ef5350 !important;
+}
+
+/* Light theme overrides for secondary buttons */
+.light-theme .btn.secondary {
+	border-color: #344b30 !important;
+	color: #1b3c1e !important;
+	background: transparent !important;
+}
+
+.light-theme .btn.secondary:hover {
+	background: rgba(52, 75, 48, 0.1) !important;
+	border-color: #1b3c1e !important;
+}
+
+
+/* ==========================================================================
+   GLOBAL TYPOGRAPHY STANDARD (Change all letter fonts to sans-serif)
+   - Ensures absolute compliance with modern sans-serif typography.
+   - Completely overrides browser-default serifs on buttons, inputs, list items, etc.
+   ========================================================================== */
+*,
+*::before,
+*::after {
+	font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif !important;
+}
+
+/* Dual Zone Pricing Structure */
+.plan-zone-top {
+	display: flex;
+	flex-direction: column;
+	padding: 2rem 2rem;
+	background: transparent;
+	position: relative;
+	border-top-left-radius: inherit;
+	border-top-right-radius: inherit;
+}
+
+.plan-zone-bottom {
+	flex-grow: 1;
+	padding: 1.5rem 2rem;
+	background: rgba(0, 0, 0, 0.05);
+	border-bottom-left-radius: inherit;
+	border-bottom-right-radius: inherit;
+	display: flex;
+	flex-direction: column;
+}
+
+.light-theme .plan-zone-bottom {
+	background: rgba(0, 0, 0, 0.03);
+}
+
+.plan-card .badge {
+	position: absolute;
+	top: 0;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background: #afd096;
+	color: #1b3c1e;
+	padding: 0.4rem 1.2rem;
+	border-radius: 20px;
+	font-weight: 700;
+	z-index: 10;
+}
+
+.price-layout {
+	display: flex;
+	align-items: flex-start;
+	margin-bottom: 0.5rem;
+	color: #afd096;
+}
+
+.light-theme .price-layout {
+	color: #344b30;
+}
+
+.price-layout .currency {
+	font-size: 1.5rem;
+	margin-top: 0.6rem;
+	margin-right: 0.2rem;
+	font-weight: 600;
+}
+
+.price-layout .amount {
+	font-size: 4rem;
+	font-weight: 800;
+	line-height: 1;
+}
+
+.price-layout .period {
+	font-size: 1.1rem;
+	color: var(--text-muted);
+	margin-top: auto;
+	margin-bottom: 0.6rem;
+	margin-left: 0.2rem;
+}
+
+.plan-card .subtext {
+	color: var(--text-muted);
+	margin-bottom: 1.5rem;
+	font-size: 1rem;
+}
+
+.btn.full-width {
+	width: 100%;
+	justify-content: center;
+	margin-top: auto;
+}
+
+/* Luxury Glossy Button for Platinum Plan */
+.btn.luxury {
+	background: linear-gradient(135deg, #a8b0b5 0%, #f4f6f8 40%, #cdd2d6 60%, #a8b0b5 100%);
+	background-size: 200% auto;
+	color: #1a2f1c !important;
+	border: 1px solid rgba(255, 255, 255, 0.6);
+	box-shadow: 0 6px 20px rgba(168, 176, 181, 0.35), inset 0 2px 4px rgba(255, 255, 255, 0.8), inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+	text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6);
+	font-weight: 700;
+	transition: all 0.4s ease;
+}
+
+.btn.luxury:hover {
+	background-position: right center;
+	transform: translateY(-3px);
+	box-shadow: 0 10px 25px rgba(168, 176, 181, 0.55), inset 0 2px 6px rgba(255, 255, 255, 0.9), inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+	border-color: rgba(255, 255, 255, 0.9);
 }
