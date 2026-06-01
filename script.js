@@ -285,16 +285,25 @@ function initScrollVideoScrub() {
 	const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
 	const scrubEase = 0.42;
 	const fastScrubEase = 0.62;
-	const minSeekInterval = 34;
-	const minSeekDelta = 0.08;
+	const minSeekInterval = 48;
+	const minSeekDelta = 0.12;
 	let ticking = false;
 	let scrubRaf = null;
+
+	const seekVideo = (video, time, preferFastSeek = false) => {
+		if (preferFastSeek && typeof video.fastSeek === 'function') {
+			video.fastSeek(time);
+			return;
+		}
+
+		video.currentTime = time;
+	};
 
 	const setScene = (section, progress) => {
 		const scenes = section.querySelectorAll('[data-scrub-scene]');
 		if (!scenes.length) return;
 
-		const revealPoint = section.classList.contains('fields-scroll') ? 0.52 : 0.58;
+		const revealPoint = section.classList.contains('fields-scroll') ? 0.62 : 0.66;
 		const activeIndex = scenes.length === 2
 			? (progress < revealPoint ? 0 : 1)
 			: Math.min(scenes.length - 1, Math.floor(progress * scenes.length));
@@ -315,8 +324,16 @@ function initScrollVideoScrub() {
 			if (!video || !sticky) return;
 
 			const rect = section.getBoundingClientRect();
+			const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+			const isNearViewport = rect.bottom > viewportHeight * -0.5 && rect.top < viewportHeight * 1.5;
 			const travel = Math.max(1, rect.height - window.innerHeight);
 			const progress = clamp(-rect.top / travel);
+
+			section.dataset.scrubActive = isNearViewport ? 'true' : 'false';
+			if (!isNearViewport) {
+				video.pause();
+				return;
+			}
 
 			if (video.duration && Number.isFinite(video.duration)) {
 				video.dataset.targetTime = String(progress * Math.max(0, video.duration - 0.05));
@@ -331,6 +348,9 @@ function initScrollVideoScrub() {
 		});
 
 		ticking = false;
+		if (!scrubRaf) {
+			scrubRaf = window.requestAnimationFrame(scrubVideos);
+		}
 	};
 
 	const scrubVideos = (now = performance.now()) => {
@@ -338,6 +358,7 @@ function initScrollVideoScrub() {
 
 		scrubSections.forEach(section => {
 			const video = section.querySelector('video');
+			if (section.dataset.scrubActive !== 'true') return;
 			if (!video || !video.dataset.targetTime) return;
 
 			const targetTime = Number(video.dataset.targetTime);
@@ -352,12 +373,12 @@ function initScrollVideoScrub() {
 				video.dataset.smoothTime = String(nextTime);
 
 				if (!video.seeking && (now - lastSeekAt > minSeekInterval || Math.abs(nextTime - video.currentTime) > minSeekDelta)) {
-					video.currentTime = nextTime;
+					seekVideo(video, nextTime, Math.abs(delta) > 0.45);
 					video.dataset.lastSeekAt = String(now);
 				}
 				shouldContinue = true;
 			} else {
-				video.currentTime = targetTime;
+				seekVideo(video, targetTime);
 				video.dataset.smoothTime = String(targetTime);
 			}
 		});
@@ -370,9 +391,6 @@ function initScrollVideoScrub() {
 			window.requestAnimationFrame(update);
 			ticking = true;
 		}
-		if (!scrubRaf) {
-			scrubRaf = window.requestAnimationFrame(scrubVideos);
-		}
 	};
 
 	const scrollToPlansScene = (behavior = 'smooth') => {
@@ -383,7 +401,7 @@ function initScrollVideoScrub() {
 		const sectionTop = window.scrollY + rect.top;
 		const travel = Math.max(1, fieldsSection.offsetHeight - window.innerHeight);
 		window.scrollTo({
-			top: sectionTop + travel * 0.6,
+			top: sectionTop + travel * 0.68,
 			behavior
 		});
 		window.requestAnimationFrame(requestUpdate);

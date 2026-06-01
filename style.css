@@ -936,7 +936,7 @@ main>section+section {
 .scroll-video-section {
 	position: relative;
 	width: 100vw;
-	height: 260vh;
+	height: 360vh;
 	margin-left: calc(50% - 50vw);
 	margin-right: calc(50% - 50vw);
 	overflow: visible;
@@ -944,13 +944,13 @@ main>section+section {
 }
 
 .fields-scroll {
-	height: 300vh;
+	height: 420vh;
 	margin-top: 0;
 }
 
 .plans-scroll-target {
 	position: absolute;
-	top: 56%;
+	top: 62%;
 	left: 0;
 	width: 1px;
 	height: 1px;
@@ -1228,7 +1228,7 @@ main > section + .scroll-video-section {
 @media (max-width: 760px) {
 	.scroll-video-section,
 	.fields-scroll {
-		height: 340vh;
+		height: 420vh;
 	}
 
 	.scroll-video-sticky {
