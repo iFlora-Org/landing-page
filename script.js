@@ -221,6 +221,61 @@ if (!prefersReducedMotion.matches && animatedBlocks.length) {
 } else {
 	animatedBlocks.forEach(block => block.classList.add('visible'));
 }
+// --- Text Effect Animations (Framer Motion equivalent) ---
+const textEffectBlocks = document.querySelectorAll('.text-effect-wrapper[data-text-effect]');
+
+if (textEffectBlocks.length > 0) {
+	const textObserver = new IntersectionObserver(entries => {
+		entries.forEach(entry => {
+			if (entry.isIntersecting) {
+				// Small delay to ensure styles are computed before adding animate-in
+				requestAnimationFrame(() => {
+					entry.target.classList.add('animate-in');
+				});
+			} else {
+				// Remove the class when it leaves the viewport to reset the animation
+				entry.target.classList.remove('animate-in');
+			}
+		});
+	}, {
+		threshold: 0.2,
+		rootMargin: '0px 0px -50px 0px'
+	});
+
+	textEffectBlocks.forEach(block => {
+		const text = block.textContent;
+		const effectType = block.getAttribute('data-text-effect') || 'blur';
+		block.setAttribute('data-preset', effectType);
+		block.textContent = ''; // Clear original text nodes
+
+		// Split text into words while preserving whitespace
+		const words = text.split(/(\s+)/);
+		let wordIndex = 0;
+		const staggerDelay = 0.035; // 35ms stagger per word
+
+		words.forEach(word => {
+			if (word.trim() === '') {
+				// Re-insert whitespace as text nodes
+				block.appendChild(document.createTextNode(word));
+			} else {
+				// Wrap words in spans with staggered transition delays
+				const span = document.createElement('span');
+				span.className = 'text-effect-char';
+				span.textContent = word;
+				// Add an inline delay to recreate framer-motion staggerChildren
+				span.style.transitionDelay = `${wordIndex * staggerDelay}s`;
+				block.appendChild(span);
+				wordIndex++;
+			}
+		});
+
+		if (!prefersReducedMotion.matches) {
+			textObserver.observe(block);
+		} else {
+			block.classList.add('animate-in');
+		}
+	});
+}
 
 // --- Canvas Particle Bloom Animation (Smooth Flow Version) ---
 const canvas = document.getElementById('blob-canvas');

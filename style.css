@@ -2380,7 +2380,53 @@ body {
 
 .btn.luxury:hover {
 	background-position: right center;
-	transform: translateY(-3px);
-	box-shadow: 0 10px 25px rgba(168, 176, 181, 0.55), inset 0 2px 6px rgba(255, 255, 255, 0.9), inset 0 -2px 4px rgba(0, 0, 0, 0.1);
-	border-color: rgba(255, 255, 255, 0.9);
+	box-shadow: 0 8px 25px rgba(168, 176, 181, 0.45), inset 0 2px 5px rgba(255, 255, 255, 0.9), inset 0 -2px 5px rgba(0, 0, 0, 0.15);
+	transform: translateY(-3px) scale(1.02);
+}
+
+/* --- Text Effect Animations --- */
+
+/* The wrapper must preserve whitespace and inline flow */
+.text-effect-wrapper {
+	display: inline-block;
+	white-space: pre-wrap;
+}
+
+/* Individual word or character */
+.text-effect-char {
+	display: inline-block;
+	white-space: pre;
+	opacity: 0;
+	will-change: transform, opacity, filter;
+}
+
+/* Preset: Blur */
+.text-effect-wrapper[data-preset="blur"] .text-effect-char {
+	filter: blur(12px);
+	transition: opacity 0.4s ease, filter 0.4s ease;
+}
+
+.text-effect-wrapper.animate-in[data-preset="blur"] .text-effect-char {
+	opacity: 1;
+	filter: blur(0px);
+}
+
+/* Preset: Slide */
+.text-effect-wrapper[data-preset="slide"] .text-effect-char {
+	transform: translateY(20px);
+	transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.text-effect-wrapper.animate-in[data-preset="slide"] .text-effect-char {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+/* Preset: Fade */
+.text-effect-wrapper[data-preset="fade"] .text-effect-char {
+	transition: opacity 0.3s ease;
+}
+
+.text-effect-wrapper.animate-in[data-preset="fade"] .text-effect-char {
+	opacity: 1;
 }
