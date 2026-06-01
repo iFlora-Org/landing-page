@@ -2040,6 +2040,40 @@ body {
 	border-bottom-color: #2d4b2f !important;
 }
 
+/* Fix standard plan colors in dark theme for legibility */
+.dark-theme .plan-card {
+	background: rgba(22, 34, 24, 0.85) !important;
+	border-color: rgba(89, 123, 91, 0.4) !important;
+}
+
+.dark-theme .plan-card:hover {
+	border-color: #8da48e !important;
+	box-shadow: 0 0 35px rgba(175, 208, 150, 0.15), 0 40px 90px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark-theme .plan-card.featured {
+	background: rgba(28, 45, 30, 0.9) !important;
+	border-color: #afd096 !important;
+}
+
+.dark-theme .plan-card ul {
+	color: #d1dfd3 !important;
+}
+
+.dark-theme .plan-card .price.contact-pricing .contact-link {
+	color: #afd096 !important;
+	border-bottom-color: #afd096 !important;
+}
+
+.dark-theme .plan-card .price.contact-pricing .contact-link:hover {
+	color: #ffffff !important;
+	border-bottom-color: #ffffff !important;
+}
+
+.dark-theme .plan-card .price span {
+	color: #8da48e !important;
+}
+
 /* ==========================================================================
    IMAGE THEME TOGGLES & EFFECTS
    ========================================================================== */
@@ -2072,6 +2106,8 @@ body {
 	opacity: 0.4;
 	filter: blur(3px);
 	pointer-events: none;
+	border-radius: inherit;
+	clip-path: inset(0 round 36px);
 }
 .plan-bg-growth {
 	right: 0;
