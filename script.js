@@ -277,6 +277,151 @@ if (textEffectBlocks.length > 0) {
 	});
 }
 
+// --- Scroll-driven video scrubbing ---
+function initScrollVideoScrub() {
+	const scrubSections = document.querySelectorAll('[data-scroll-video]');
+	if (!scrubSections.length) return;
+
+	const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
+	const scrubEase = 0.42;
+	const fastScrubEase = 0.62;
+	const minSeekInterval = 34;
+	const minSeekDelta = 0.08;
+	let ticking = false;
+	let scrubRaf = null;
+
+	const setScene = (section, progress) => {
+		const scenes = section.querySelectorAll('[data-scrub-scene]');
+		if (!scenes.length) return;
+
+		const revealPoint = section.classList.contains('fields-scroll') ? 0.52 : 0.58;
+		const activeIndex = scenes.length === 2
+			? (progress < revealPoint ? 0 : 1)
+			: Math.min(scenes.length - 1, Math.floor(progress * scenes.length));
+		scenes.forEach((scene, index) => {
+			const isActive = index === activeIndex;
+			scene.classList.toggle('is-active', isActive);
+			if (isActive) {
+				scene.querySelectorAll('[data-animate]').forEach(child => child.classList.add('visible'));
+				scene.querySelectorAll('.text-effect-wrapper[data-text-effect]').forEach(child => child.classList.add('animate-in'));
+			}
+		});
+	};
+
+	const update = () => {
+		scrubSections.forEach(section => {
+			const video = section.querySelector('video');
+			const sticky = section.querySelector('.scroll-video-sticky');
+			if (!video || !sticky) return;
+
+			const rect = section.getBoundingClientRect();
+			const travel = Math.max(1, rect.height - window.innerHeight);
+			const progress = clamp(-rect.top / travel);
+
+			if (video.duration && Number.isFinite(video.duration)) {
+				video.dataset.targetTime = String(progress * Math.max(0, video.duration - 0.05));
+				if (!video.dataset.smoothTime) {
+					video.dataset.smoothTime = String(video.currentTime || 0);
+				}
+			}
+
+			video.pause();
+			setScene(section, progress);
+			section.style.setProperty('--scrub-progress', progress.toFixed(4));
+		});
+
+		ticking = false;
+	};
+
+	const scrubVideos = (now = performance.now()) => {
+		let shouldContinue = false;
+
+		scrubSections.forEach(section => {
+			const video = section.querySelector('video');
+			if (!video || !video.dataset.targetTime) return;
+
+			const targetTime = Number(video.dataset.targetTime);
+			if (!Number.isFinite(targetTime)) return;
+
+			const currentSmoothTime = Number(video.dataset.smoothTime || video.currentTime || 0);
+			const delta = targetTime - currentSmoothTime;
+			if (Math.abs(delta) > 0.004) {
+				const ease = Math.abs(delta) > 1 ? fastScrubEase : scrubEase;
+				const nextTime = currentSmoothTime + delta * ease;
+				const lastSeekAt = Number(video.dataset.lastSeekAt || 0);
+				video.dataset.smoothTime = String(nextTime);
+
+				if (!video.seeking && (now - lastSeekAt > minSeekInterval || Math.abs(nextTime - video.currentTime) > minSeekDelta)) {
+					video.currentTime = nextTime;
+					video.dataset.lastSeekAt = String(now);
+				}
+				shouldContinue = true;
+			} else {
+				video.currentTime = targetTime;
+				video.dataset.smoothTime = String(targetTime);
+			}
+		});
+
+		scrubRaf = shouldContinue ? window.requestAnimationFrame(scrubVideos) : null;
+	};
+
+	const requestUpdate = () => {
+		if (!ticking) {
+			window.requestAnimationFrame(update);
+			ticking = true;
+		}
+		if (!scrubRaf) {
+			scrubRaf = window.requestAnimationFrame(scrubVideos);
+		}
+	};
+
+	const scrollToPlansScene = (behavior = 'smooth') => {
+		const fieldsSection = document.querySelector('.fields-scroll');
+		if (!fieldsSection) return;
+
+		const rect = fieldsSection.getBoundingClientRect();
+		const sectionTop = window.scrollY + rect.top;
+		const travel = Math.max(1, fieldsSection.offsetHeight - window.innerHeight);
+		window.scrollTo({
+			top: sectionTop + travel * 0.6,
+			behavior
+		});
+		window.requestAnimationFrame(requestUpdate);
+	};
+
+	scrubSections.forEach(section => {
+		const video = section.querySelector('video');
+		if (!video) return;
+
+		video.pause();
+		video.addEventListener('loadedmetadata', requestUpdate, { once: true });
+		video.addEventListener('canplay', requestUpdate, { once: true });
+		setScene(section, 0);
+
+		if (prefersReducedMotion.matches) {
+			video.currentTime = 0;
+		}
+	});
+
+	window.addEventListener('scroll', requestUpdate, { passive: true });
+	window.addEventListener('resize', requestUpdate);
+	document.querySelectorAll('a[href="#plans"]').forEach(link => {
+		link.addEventListener('click', event => {
+			event.preventDefault();
+			scrollToPlansScene();
+			history.pushState(null, '', '#plans');
+		});
+	});
+
+	if (window.location.hash === '#plans') {
+		window.requestAnimationFrame(() => scrollToPlansScene('auto'));
+	}
+
+	requestUpdate();
+}
+
+initScrollVideoScrub();
+
 // --- Canvas Particle Bloom Animation (Smooth Flow Version) ---
 const canvas = document.getElementById('blob-canvas');
 if (canvas && !prefersReducedMotion.matches) {
@@ -867,5 +1012,3 @@ function initMobileFeatureScrollSpy() {
 // Initial activation on page load
 initMobileFeatureScrollSpy();
 window.addEventListener('resize', initMobileFeatureScrollSpy);
-
-
