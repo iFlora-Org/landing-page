@@ -2430,3 +2430,140 @@ body {
 .text-effect-wrapper.animate-in[data-preset="fade"] .text-effect-char {
 	opacity: 1;
 }
+
+/* ==========================================================================
+   Shader Cards Grid Styles
+   ========================================================================== */
+
+.shader-cards-grid {
+	display: grid;
+	grid-template-columns: repeat(1, 1fr);
+	gap: 2rem;
+	width: 100%;
+	max-width: 1280px;
+	margin: 2rem auto;
+}
+
+@media (min-width: 768px) {
+	.shader-cards-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+.shader-card-wrapper {
+	position: relative;
+	height: 320px;
+	border-radius: 1.5rem;
+	overflow: hidden;
+	transform-style: preserve-3d;
+	transition: transform 0.3s ease;
+}
+
+.shader-card-wrapper:hover {
+	transform: translateY(-5px);
+}
+
+/* Background Shader Layers */
+.shader-background {
+	position: absolute;
+	inset: 0;
+	border-radius: 1.5rem;
+	overflow: hidden;
+	z-index: 0;
+}
+
+.shader-gradient {
+	position: absolute;
+	width: 200%;
+	height: 200%;
+	top: -50%;
+	left: -50%;
+	transform-origin: center;
+	transition: filter 0.5s ease;
+}
+
+.animate-warp {
+	animation: slow-spin 20s linear infinite;
+}
+
+@keyframes slow-spin {
+	from { transform: rotate(0deg); }
+	to { transform: rotate(360deg); }
+}
+
+/* Presets based on the React Configs */
+.bg-preset-1 .shader-gradient {
+	background: radial-gradient(circle at 30% 30%, var(--accent-a), transparent 40%),
+	            radial-gradient(circle at 70% 70%, var(--accent-b), transparent 50%),
+				radial-gradient(circle at 20% 80%, var(--accent-c), transparent 60%);
+	background-color: var(--muted);
+	filter: url(#fluid-warp-1) blur(10px);
+}
+
+.bg-preset-2 .shader-gradient {
+	background: radial-gradient(circle at 20% 40%, var(--accent-b), transparent 50%),
+	            radial-gradient(circle at 80% 60%, var(--accent-c), transparent 40%),
+				radial-gradient(circle at 50% 20%, var(--accent-a), transparent 60%);
+	background-color: var(--muted);
+	filter: url(#fluid-warp-2) blur(15px);
+}
+
+.bg-preset-3 .shader-gradient {
+	background: radial-gradient(circle at 40% 30%, var(--accent-c), transparent 40%),
+	            radial-gradient(circle at 70% 80%, var(--accent-a), transparent 50%),
+				radial-gradient(circle at 80% 20%, var(--accent-b), transparent 60%);
+	background-color: var(--muted);
+	filter: url(#fluid-warp-3) blur(12px);
+}
+
+.bg-preset-4 .shader-gradient {
+	background: radial-gradient(circle at 20% 80%, var(--accent-a), transparent 40%),
+	            radial-gradient(circle at 80% 20%, var(--accent-c), transparent 50%),
+				radial-gradient(circle at 50% 50%, var(--accent-b), transparent 60%);
+	background-color: var(--muted);
+	filter: url(#fluid-warp-4) blur(14px);
+}
+
+/* Card Content Overlay */
+.shader-card-content {
+	position: relative;
+	z-index: 10;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	padding: 2rem;
+	background-color: rgba(0, 0, 0, 0.8); /* bg-black/80 */
+	border: 1px solid rgba(255, 255, 255, 0.1); /* border-white/10 */
+	border-radius: 1.5rem;
+	color: #fff;
+	box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+}
+
+.shader-card-content h3 {
+	font-size: 1.5rem;
+	font-weight: 700;
+	margin-bottom: 1rem;
+	color: #fff !important;
+}
+
+.shader-card-content p {
+	font-size: 1rem;
+	line-height: 1.6;
+	color: rgba(255, 255, 255, 0.9);
+	flex-grow: 1;
+	font-weight: 500;
+}
+
+.shader-icon {
+	width: 3rem;
+	height: 3rem;
+	margin-bottom: 1.5rem;
+	filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+}
+
+.shader-icon img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	filter: brightness(0) invert(1) !important; /* Force icons to white inside dark overlay */
+}
