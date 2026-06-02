@@ -251,7 +251,7 @@ if (textEffectBlocks.length > 0) {
 		// Split text into words while preserving whitespace
 		const words = text.split(/(\s+)/);
 		let wordIndex = 0;
-		const staggerDelay = 0.035; // 35ms stagger per word
+		const staggerDelay = block.closest('.scrub-scene-intro') ? 0.075 : 0.035;
 
 		words.forEach(word => {
 			if (word.trim() === '') {
@@ -299,6 +299,13 @@ function initScrollVideoScrub() {
 		video.currentTime = time;
 	};
 
+	const resetScenes = section => {
+		section.querySelectorAll('[data-scrub-scene]').forEach(scene => {
+			scene.classList.remove('is-active');
+			scene.querySelectorAll('.text-effect-wrapper[data-text-effect]').forEach(child => child.classList.remove('animate-in'));
+		});
+	};
+
 	const setScene = (section, progress) => {
 		const scenes = section.querySelectorAll('[data-scrub-scene]');
 		if (!scenes.length) return;
@@ -332,6 +339,7 @@ function initScrollVideoScrub() {
 			section.dataset.scrubActive = isNearViewport ? 'true' : 'false';
 			if (!isNearViewport) {
 				video.pause();
+				resetScenes(section);
 				return;
 			}
 
@@ -414,7 +422,6 @@ function initScrollVideoScrub() {
 		video.pause();
 		video.addEventListener('loadedmetadata', requestUpdate, { once: true });
 		video.addEventListener('canplay', requestUpdate, { once: true });
-		setScene(section, 0);
 
 		if (prefersReducedMotion.matches) {
 			video.currentTime = 0;
@@ -619,6 +626,15 @@ function updateTheme() {
 }
 
 function setTheme(theme) {
+	const previousTheme = document.body.classList.contains('dark-theme') ? 'dark' : (document.body.classList.contains('light-theme') ? 'light' : null);
+	if (previousTheme && previousTheme !== theme) {
+		document.body.classList.add('theme-transitioning');
+		window.clearTimeout(window.__themeTransitionTimer);
+		window.__themeTransitionTimer = window.setTimeout(() => {
+			document.body.classList.remove('theme-transitioning');
+		}, 1400);
+	}
+
 	if (theme === 'dark') {
 		document.body.classList.remove('light-theme');
 		document.body.classList.add('dark-theme');
