@@ -3,6 +3,32 @@ const header = document.querySelector('.site-header');
 const videos = document.querySelectorAll('video');
 const heroSection = document.querySelector('.hero-section');
 const heroBlobFrame = document.querySelector('.hero-blob-frame');
+const menuToggle = document.querySelector('.menu-toggle');
+const navLinks = document.querySelector('.nav-links');
+
+function setMobileMenu(open) {
+	if (!header || !menuToggle || !navLinks) return;
+	header.classList.toggle('nav-open', open);
+	menuToggle.setAttribute('aria-expanded', String(open));
+	menuToggle.setAttribute('aria-label', open ? 'Κλείσιμο μενού' : 'Άνοιγμα μενού');
+}
+
+menuToggle?.addEventListener('click', () => {
+	setMobileMenu(!header?.classList.contains('nav-open'));
+});
+
+navLinks?.querySelectorAll('a').forEach((link) => {
+	link.addEventListener('click', () => setMobileMenu(false));
+});
+
+document.addEventListener('keydown', (event) => {
+	if (event.key === 'Escape') setMobileMenu(false);
+});
+
+document.addEventListener('click', (event) => {
+	if (!header?.classList.contains('nav-open')) return;
+	if (!header.contains(event.target)) setMobileMenu(false);
+});
 
 if ('IntersectionObserver' in window && revealItems.length) {
 	const revealObserver = new IntersectionObserver((entries) => {
