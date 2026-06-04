@@ -152,13 +152,14 @@
 
         // ── Animation ──────────────────────────────────────────────────────────────────
         let time = 0;
+        let renderedBreakProgress = 0;
         const AR = 248, AG = 250, AB = 244; // white particles for video overlay
 
         function blobPosition(d, t, spreadFactor) {
             const angle = d.baseAngle + t * 0.04;
             const drift = t * d.speed * (1.2 + spreadFactor * 0.5) + d.noiseOff;
             const nv = noise(Math.cos(angle) * 1.5, Math.sin(angle) * 1.5, drift);
-            const currentBaseR = baseBlob + spreadFactor * Math.max(W, H) * 1.0;
+            const currentBaseR = baseBlob + spreadFactor * Math.max(W, H) * 0.72;
             const wobble = 1 + nv * (0.06 + spreadFactor * 0.04) * (0.4 + d.baseR * 0.6);
             const r = currentBaseR * wobble;
             return {
@@ -170,11 +171,12 @@
         function frame() {
             requestAnimationFrame(frame);
             time += 0.005;
+            renderedBreakProgress += (scrollBreakProgress - renderedBreakProgress) * 0.085;
 
-            const breakProgress = Math.max(0, Math.min(1, scrollBreakProgress));
+            const breakProgress = Math.max(0, Math.min(1, renderedBreakProgress));
             const shapeHold = 1 - breakProgress;
             const spreadFactor = breakProgress;
-            const virtualScroll = breakProgress * H * 0.55;
+            const virtualScroll = breakProgress * H * 0.34;
 
             ctx.clearRect(0, 0, W, H);
 
@@ -196,7 +198,7 @@
 
                 // Alpha fades with scroll so the mark breaks apart cleanly.
                 const centerBright = 1 - d.baseR * 0.55;
-                const fadeFactor = Math.max(0, 1 - breakProgress * 1.05);
+                const fadeFactor = Math.max(0.28, 1 - breakProgress * 0.58);
                 const pulse = Math.sin(time * 2 + d.noiseOff * 0.3) * 0.15 * shapeHold;
                 const alpha = (0.55 + shapeHold * 0.35 + pulse) * centerBright * fadeFactor;
 

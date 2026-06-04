@@ -60,13 +60,19 @@ updateHeaderDepth();
 window.addEventListener('scroll', updateHeaderDepth, { passive: true });
 
 let blobScrollQueued = false;
-const blobScrollStart = window.scrollY;
-const blobBreakDistance = 340;
+const getScrollY = () => window.scrollY || window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+const blobScrollStart = 0;
+
+function getBlobBreakDistance() {
+	const viewportHeight = window.visualViewport?.height || window.innerHeight || 720;
+	const isMobile = window.matchMedia('(max-width: 720px)').matches;
+	return Math.max(isMobile ? 720 : 420, viewportHeight * (isMobile ? 0.9 : 0.58));
+}
 
 function updateBlobScrollState() {
 	if (!heroSection || !heroBlobFrame?.contentWindow) return;
 
-	const progress = Math.min(1, Math.max(0, (window.scrollY - blobScrollStart) / blobBreakDistance));
+	const progress = Math.min(1, Math.max(0, (getScrollY() - blobScrollStart) / getBlobBreakDistance()));
 
 	heroBlobFrame.contentWindow.postMessage({
 		type: 'iflora-blob-scroll',
@@ -86,6 +92,9 @@ function requestBlobScrollState() {
 heroBlobFrame?.addEventListener('load', updateBlobScrollState);
 window.addEventListener('scroll', requestBlobScrollState, { passive: true });
 window.addEventListener('resize', requestBlobScrollState);
+window.visualViewport?.addEventListener('scroll', requestBlobScrollState, { passive: true });
+window.visualViewport?.addEventListener('resize', requestBlobScrollState, { passive: true });
+document.addEventListener('touchmove', requestBlobScrollState, { passive: true });
 updateBlobScrollState();
 
 videos.forEach((video) => {
