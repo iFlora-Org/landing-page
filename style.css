@@ -214,6 +214,19 @@ video {
 	border-color: #c9ddbf;
 }
 
+.btn-login {
+	background: rgba(175, 208, 150, 0.96);
+	border-color: rgba(175, 208, 150, 0.96);
+	color: var(--forest);
+	box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+}
+
+.btn-login:hover,
+.btn-login:focus-visible {
+	background: #c9ddbf;
+	border-color: #c9ddbf;
+}
+
 .btn-outline,
 .btn-ghost {
 	background: transparent;

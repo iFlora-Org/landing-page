@@ -5,6 +5,14 @@ const heroSection = document.querySelector('.hero-section');
 const heroBlobFrame = document.querySelector('.hero-blob-frame');
 const menuToggle = document.querySelector('.menu-toggle');
 const navLinks = document.querySelector('.nav-links');
+const dashboardLoginLinks = document.querySelectorAll('[data-dashboard-login]');
+
+const dashboardUrl = window.IFLORA_DASHBOARD_URL || document.documentElement.dataset.dashboardUrl;
+if (dashboardUrl) {
+	dashboardLoginLinks.forEach((link) => {
+		link.href = dashboardUrl;
+	});
+}
 
 function setMobileMenu(open) {
 	if (!header || !menuToggle || !navLinks) return;
