@@ -132,6 +132,10 @@ video {
 	color: var(--sage);
 }
 
+.mobile-nav-login {
+	display: none;
+}
+
 .header-actions {
 	display: flex;
 	align-items: center;
@@ -1186,6 +1190,19 @@ main {
 	.nav-links a:hover,
 	.nav-links a:focus-visible {
 		background: rgba(245, 250, 233, 0.1);
+	}
+
+	.nav-links .mobile-nav-login {
+		display: flex;
+		margin-top: 0.2rem;
+		background: var(--sage);
+		color: var(--forest);
+	}
+
+	.nav-links .mobile-nav-login:hover,
+	.nav-links .mobile-nav-login:focus-visible {
+		background: #c9ddbf;
+		color: var(--forest);
 	}
 
 	.menu-toggle {
