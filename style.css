@@ -973,15 +973,36 @@ main {
 .plans-notes {
 	margin-top: 3rem;
 	text-align: left;
-	color: rgba(245, 250, 233, 0.7);
+	color: rgba(245, 250, 233, 0.78);
 	font-size: 0.9rem;
 	line-height: 1.6;
 	max-width: 1000px;
 	margin-inline: auto;
+	display: grid;
+	gap: 0.55rem;
+	padding: 1.15rem 1.25rem;
+	border: 1px solid rgba(245, 250, 233, 0.12);
+	border-radius: 16px;
+	background: rgba(7, 22, 13, 0.38);
+	backdrop-filter: blur(8px);
 }
 
 .plans-notes p {
-	margin-bottom: 0.5rem;
+	display: grid;
+	grid-template-columns: 0.8rem minmax(0, 1fr);
+	gap: 0.45rem;
+	margin: 0;
+}
+
+.plans-notes p > span:first-child {
+	color: #b8e35f;
+	font-weight: 800;
+	line-height: 1.6;
+}
+
+.keyword {
+	color: #b8e35f;
+	font-weight: 750;
 }
 
 .faq-grid {
