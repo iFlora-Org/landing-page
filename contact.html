@@ -19,8 +19,22 @@
 		<div class="noise-overlay" aria-hidden="true"></div>
 
 		<!-- Navigation -->
-		<nav class="navbar" id="navbar" style="justify-content: flex-start; padding: 1rem 2rem;">
+		<nav class="navbar" id="navbar" style="justify-content: space-between; padding: 1rem 2rem;">
 			<a href="index.html" class="btn primary" style="text-decoration: none;">&larr; Επιστροφή</a>
+			<label class="language-switcher contact-language-switcher" aria-label="Language selector">
+					<span class="language-switcher-label">Lang</span>
+					<select class="language-select" data-language-select aria-label="Language">
+						<option value="el">🇬🇷 EL</option>
+						<option value="bg">🇧🇬 BG</option>
+						<option value="sq">🇦🇱 SQ</option>
+						<option value="tr">🇹🇷 TR</option>
+						<option value="ro">🇷🇴 RO</option>
+						<option value="nl">🇳🇱 NL</option>
+						<option value="fr">🇫🇷 FR</option>
+						<option value="es">🇪🇸 ES</option>
+						<option value="it">🇮🇹 IT</option>
+					</select>
+			</label>
 		</nav>
 
 		<main style="min-height: 85vh; display: flex; align-items: center; justify-content: center; padding: 2rem; margin-top: 5rem;">
@@ -85,44 +99,8 @@
 		</div>
 	</div>
 
+	<script src="i18n.js"></script>
 	<script src="script.js"></script>
-	<script>
-		// Ensure background colors adapt for the form based on theme
-		const initFormTheme = () => {
-			const isLight = document.body.classList.contains('light-theme');
-			const form = document.querySelector('.contact-form');
-			const inputs = document.querySelectorAll('.contact-form input, .contact-form textarea, .contact-form select');
-			
-			if (isLight) {
-				form.style.background = 'rgba(0, 0, 0, 0.04)';
-				form.style.borderColor = 'rgba(0, 0, 0, 0.08)';
-				inputs.forEach(input => {
-					input.style.background = 'rgba(255, 255, 255, 0.6)';
-					input.style.borderColor = 'rgba(0, 0, 0, 0.1)';
-				});
-			} else {
-				form.style.background = 'rgba(255, 255, 255, 0.03)';
-				form.style.borderColor = 'rgba(255, 255, 255, 0.08)';
-				inputs.forEach(input => {
-					input.style.background = 'rgba(0, 0, 0, 0.2)';
-					input.style.borderColor = 'rgba(175, 208, 154, 0.3)';
-				});
-			}
-		};
-
-		const themeObserver = new MutationObserver((mutations) => {
-			mutations.forEach((mutation) => {
-				if (mutation.attributeName === 'class') {
-					initFormTheme();
-				}
-			});
-		});
-		
-		themeObserver.observe(document.body, { attributes: true });
-		
-		// Trigger once on load
-		initFormTheme();
-	</script>
 </body>
 
 </html>

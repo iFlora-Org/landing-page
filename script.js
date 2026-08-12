@@ -16,9 +16,10 @@ if (dashboardUrl) {
 
 function setMobileMenu(open) {
 	if (!header || !menuToggle || !navLinks) return;
+	const menuLabel = open ? 'Κλείσιμο μενού' : 'Άνοιγμα μενού';
 	header.classList.toggle('nav-open', open);
 	menuToggle.setAttribute('aria-expanded', String(open));
-	menuToggle.setAttribute('aria-label', open ? 'Κλείσιμο μενού' : 'Άνοιγμα μενού');
+	menuToggle.setAttribute('aria-label', window.iFloraTranslate ? window.iFloraTranslate(menuLabel) : menuLabel);
 }
 
 menuToggle?.addEventListener('click', () => {
@@ -36,6 +37,11 @@ document.addEventListener('keydown', (event) => {
 document.addEventListener('click', (event) => {
 	if (!header?.classList.contains('nav-open')) return;
 	if (!header.contains(event.target)) setMobileMenu(false);
+});
+
+window.addEventListener('iflora-language-change', () => {
+	if (!header || !menuToggle) return;
+	setMobileMenu(header.classList.contains('nav-open'));
 });
 
 if ('IntersectionObserver' in window && revealItems.length) {
@@ -110,3 +116,24 @@ videos.forEach((video) => {
 		video.controls = true;
 	});
 });
+
+const contactForm = document.querySelector('.contact-form');
+
+if (contactForm) {
+	const contactInputs = document.querySelectorAll('.contact-form input, .contact-form textarea, .contact-form select');
+	const updateContactFormTheme = () => {
+		const isLight = document.body.classList.contains('light-theme');
+		contactForm.style.background = isLight ? 'rgba(0, 0, 0, 0.04)' : 'rgba(255, 255, 255, 0.03)';
+		contactForm.style.borderColor = isLight ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.08)';
+		contactInputs.forEach((input) => {
+			input.style.background = isLight ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.2)';
+			input.style.borderColor = isLight ? 'rgba(0, 0, 0, 0.1)' : 'rgba(175, 208, 154, 0.3)';
+		});
+	};
+
+	new MutationObserver(updateContactFormTheme).observe(document.body, {
+		attributes: true,
+		attributeFilter: ['class']
+	});
+	updateContactFormTheme();
+}
