@@ -143,41 +143,246 @@ video {
 }
 
 .language-switcher {
+	position: relative;
 	display: inline-flex;
 	align-items: center;
-	gap: 0.35rem;
-	min-height: 42px;
-	padding: 0.24rem 0.36rem 0.24rem 0.7rem;
-	border: 1px solid rgba(245, 250, 233, 0.2);
+	gap: 0.42rem;
+	min-height: 44px;
+	padding: 0.24rem;
+	border: 1px solid rgba(245, 250, 233, 0.18);
 	border-radius: 999px;
-	background: rgba(245, 250, 233, 0.08);
+	background:
+		linear-gradient(145deg, rgba(245, 250, 233, 0.13), rgba(245, 250, 233, 0.04)),
+		rgba(9, 17, 12, 0.54);
+	box-shadow:
+		0 14px 34px rgba(0, 0, 0, 0.22),
+		inset 0 1px 0 rgba(255, 255, 255, 0.12);
 	color: var(--white);
 	font-size: 0.72rem;
 	font-weight: 800;
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
+	backdrop-filter: blur(18px);
+	-webkit-backdrop-filter: blur(18px);
 }
 
 .language-switcher-label {
+	padding-left: 0.55rem;
 	color: var(--muted);
 }
 
 .language-select {
-	min-width: 5.4rem;
-	min-height: 32px;
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	white-space: nowrap;
 	border: 0;
+	padding: 0;
+}
+
+.language-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.48rem;
+	min-height: 34px;
+	padding: 0 0.72rem 0 0.58rem;
+	border: 1px solid rgba(245, 250, 233, 0.14);
 	border-radius: 999px;
-	background: rgba(9, 17, 12, 0.72);
+	background:
+		linear-gradient(145deg, rgba(245, 250, 233, 0.15), rgba(245, 250, 233, 0.045)),
+		rgba(7, 16, 9, 0.76);
 	color: var(--white);
-	font: inherit;
-	letter-spacing: 0.04em;
-	padding: 0 0.5rem;
 	cursor: pointer;
+	outline: none;
+	font: inherit;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+	transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.language-button:hover,
+.language-button:focus-visible {
+	border-color: rgba(175, 208, 150, 0.55);
+	background:
+		linear-gradient(145deg, rgba(175, 208, 150, 0.18), rgba(245, 250, 233, 0.06)),
+		rgba(7, 16, 9, 0.86);
+}
+
+.language-button:active {
+	transform: translateY(1px);
+}
+
+.language-current-code {
+	min-width: 2ch;
+}
+
+.language-chevron {
+	width: 0.45rem;
+	height: 0.45rem;
+	border-right: 2px solid currentColor;
+	border-bottom: 2px solid currentColor;
+	transform: translateY(-0.12rem) rotate(45deg);
+	opacity: 0.72;
+	transition: transform 0.22s ease, opacity 0.22s ease;
+}
+
+.language-switcher.is-open .language-chevron {
+	transform: translateY(0.1rem) rotate(225deg);
+	opacity: 1;
+}
+
+.language-menu {
+	position: absolute;
+	top: calc(100% + 0.65rem);
+	right: 0;
+	z-index: 80;
+	display: grid;
+	gap: 0.22rem;
+	min-width: 13.2rem;
+	padding: 0.48rem;
+	border: 1px solid rgba(245, 250, 233, 0.16);
+	border-radius: 20px;
+	background:
+		linear-gradient(145deg, rgba(245, 250, 233, 0.1), rgba(245, 250, 233, 0.035)),
+		rgba(8, 17, 11, 0.94);
+	box-shadow:
+		0 24px 55px rgba(0, 0, 0, 0.34),
+		inset 0 1px 0 rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(22px);
+	-webkit-backdrop-filter: blur(22px);
+	opacity: 0;
+	pointer-events: none;
+	transform: translateY(-7px) scale(0.98);
+	transform-origin: top right;
+	transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.language-switcher.is-open .language-menu {
+	opacity: 1;
+	pointer-events: auto;
+	transform: translateY(0) scale(1);
+}
+
+.language-option {
+	display: flex;
+	align-items: center;
+	gap: 0.65rem;
+	width: 100%;
+	min-height: 40px;
+	padding: 0.52rem 0.62rem;
+	border: 0;
+	border-radius: 14px;
+	background: transparent;
+	color: rgba(245, 250, 233, 0.82);
+	cursor: pointer;
+	font: inherit;
+	font-size: 0.82rem;
+	font-weight: 800;
+	letter-spacing: 0.02em;
+	text-align: left;
+	transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+.language-option:hover,
+.language-option:focus-visible,
+.language-option.is-active {
+	background: rgba(175, 208, 150, 0.16);
+	color: var(--white);
 	outline: none;
 }
 
-.language-select:focus-visible {
+.language-option:active {
+	transform: translateY(1px);
+}
+
+.language-option-code {
+	width: 2.2rem;
+	color: var(--sage);
+	font-size: 0.72rem;
+	letter-spacing: 0.12em;
+}
+
+.language-option-name {
+	flex: 1;
+	text-transform: none;
+	letter-spacing: 0;
+}
+
+.language-button:focus-visible,
+.language-option:focus-visible {
 	box-shadow: 0 0 0 2px rgba(175, 208, 150, 0.7);
+}
+
+.flag-icon {
+	position: relative;
+	flex: 0 0 24px;
+	width: 24px;
+	height: 16px;
+	overflow: hidden;
+	border-radius: 4px;
+	background: #dce8d4;
+	box-shadow:
+		0 0 0 1px rgba(255, 255, 255, 0.22),
+		0 3px 8px rgba(0, 0, 0, 0.18);
+}
+
+.flag-el {
+	background: linear-gradient(to bottom, #0d5eaf 0 11%, #fff 11% 22%, #0d5eaf 22% 33%, #fff 33% 44%, #0d5eaf 44% 55%, #fff 55% 66%, #0d5eaf 66% 77%, #fff 77% 88%, #0d5eaf 88% 100%);
+}
+
+.flag-el::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 43%;
+	height: 55%;
+	background:
+		linear-gradient(to right, transparent 37%, #fff 37% 59%, transparent 59%),
+		linear-gradient(to bottom, transparent 33%, #fff 33% 58%, transparent 58%),
+		#0d5eaf;
+}
+
+.flag-bg { background: linear-gradient(to bottom, #fff 0 33.33%, #00966e 33.33% 66.66%, #d62612 66.66% 100%); }
+.flag-ro { background: linear-gradient(to right, #002b7f 0 33.33%, #fcd116 33.33% 66.66%, #ce1126 66.66% 100%); }
+.flag-nl { background: linear-gradient(to bottom, #ae1c28 0 33.33%, #fff 33.33% 66.66%, #21468b 66.66% 100%); }
+.flag-fr { background: linear-gradient(to right, #0055a4 0 33.33%, #fff 33.33% 66.66%, #ef4135 66.66% 100%); }
+.flag-es { background: linear-gradient(to bottom, #aa151b 0 25%, #f1bf00 25% 75%, #aa151b 75% 100%); }
+.flag-it { background: linear-gradient(to right, #009246 0 33.33%, #fff 33.33% 66.66%, #ce2b37 66.66% 100%); }
+
+.flag-sq {
+	background: #e41f26;
+}
+
+.flag-sq::before {
+	content: "";
+	position: absolute;
+	inset: 4px 7px;
+	background: #111;
+	clip-path: polygon(50% 0, 64% 31%, 100% 23%, 73% 50%, 95% 82%, 56% 68%, 50% 100%, 44% 68%, 5% 82%, 27% 50%, 0 23%, 36% 31%);
+}
+
+.flag-tr {
+	background:
+		radial-gradient(circle at 45% 50%, #e30a17 0 17%, transparent 18%),
+		radial-gradient(circle at 36% 50%, #fff 0 23%, transparent 24%),
+		#e30a17;
+}
+
+.flag-tr::after {
+	content: "";
+	position: absolute;
+	left: 15px;
+	top: 6px;
+	width: 4px;
+	height: 4px;
+	background: #fff;
+	clip-path: polygon(50% 0, 61% 36%, 100% 36%, 68% 57%, 79% 94%, 50% 72%, 21% 94%, 32% 57%, 0 36%, 39% 36%);
 }
 
 .contact-language-switcher {
@@ -1037,10 +1242,28 @@ main {
 	margin: clamp(2.5rem, 5vw, 4.5rem) auto 0;
 	max-width: 1180px;
 	padding: clamp(1.35rem, 3vw, 2.25rem);
-	border: 1px solid rgba(245, 250, 233, 0.16);
-	border-radius: 24px;
-	background: rgba(7, 22, 13, 0.58);
-	backdrop-filter: blur(14px);
+	border: 1px solid rgba(245, 250, 233, 0.18);
+	border-radius: 28px;
+	background:
+		radial-gradient(circle at 16% 6%, rgba(184, 227, 95, 0.16), transparent 28%),
+		radial-gradient(circle at 92% 18%, rgba(255, 255, 255, 0.1), transparent 26%),
+		linear-gradient(145deg, rgba(245, 250, 233, 0.09), rgba(245, 250, 233, 0.025)),
+		rgba(7, 22, 13, 0.66);
+	box-shadow:
+		0 28px 80px rgba(0, 0, 0, 0.22),
+		inset 0 1px 0 rgba(255, 255, 255, 0.11);
+	backdrop-filter: blur(18px);
+	-webkit-backdrop-filter: blur(18px);
+}
+
+.discount-programs::before {
+	content: "";
+	position: absolute;
+	inset: 1px;
+	z-index: 0;
+	border-radius: inherit;
+	background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 42%, rgba(175, 208, 150, 0.07));
+	pointer-events: none;
 }
 
 .discount-programs-heading {
@@ -1055,7 +1278,7 @@ main {
 .discount-programs-heading > p:last-child { margin-top: 0.55rem; color: rgba(245, 250, 233, 0.72); }
 .discount-programs-heading .future-motto { padding-left: 1rem; border-left: 3px solid #b8e35f; color: #eaf5df; font-weight: 700; }
 
-.future-graphic { position: absolute; z-index: -1; top: 0; right: 0; width: min(42%, 470px); height: 245px; overflow: hidden; opacity: 0.72; pointer-events: none; }
+.future-graphic { position: absolute; z-index: 1; top: 0; right: 0; width: min(42%, 470px); height: 245px; overflow: hidden; opacity: 0.52; pointer-events: none; }
 .future-graphic::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(7, 22, 13, 1), transparent 48%), linear-gradient(0deg, rgba(7, 22, 13, 0.92), transparent 64%); }
 .future-sun { position: absolute; top: 30px; right: 58px; width: 72px; height: 72px; border-radius: 50%; background: #b8e35f; box-shadow: 0 0 55px rgba(184, 227, 95, 0.55); }
 .future-field { position: absolute; left: 6%; width: 125%; height: 120px; border: 2px solid rgba(175, 208, 150, 0.55); border-radius: 50%; transform: rotate(-8deg); }
@@ -1075,34 +1298,220 @@ main {
 .discount-grid {
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 1rem;
+	gap: clamp(0.9rem, 2vw, 1.25rem);
 }
 
 .discount-card {
 	position: relative;
 	z-index: 2;
-	padding: clamp(1.15rem, 2.5vw, 1.65rem);
-	border: 1px solid rgba(175, 208, 150, 0.2);
-	border-radius: 18px;
-	background: linear-gradient(145deg, rgba(175, 208, 150, 0.12), rgba(255, 255, 255, 0.035));
+	display: flex;
+	flex-direction: column;
+	min-height: 100%;
+	padding: clamp(1.2rem, 2.5vw, 1.85rem);
+	overflow: hidden;
+	border: 1px solid rgba(245, 250, 233, 0.18);
+	border-radius: 22px;
+	background:
+		radial-gradient(circle at 88% 12%, rgba(255, 255, 255, 0.12), transparent 24%),
+		linear-gradient(145deg, rgba(175, 208, 150, 0.13), rgba(255, 255, 255, 0.035)),
+		rgba(11, 24, 14, 0.6);
+	box-shadow:
+		0 18px 48px rgba(0, 0, 0, 0.18),
+		inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
-.discount-card.nextgen { background: linear-gradient(145deg, rgba(184, 227, 95, 0.13), rgba(255, 255, 255, 0.035)); }
-.discount-card-top { display: flex; align-items: center; gap: 0.9rem; }
-.discount-icon { display: grid; place-items: center; flex: 0 0 48px; width: 48px; height: 48px; border-radius: 50%; background: var(--sage); color: var(--forest); font-size: 1.1rem; font-weight: 900; }
-.discount-label { color: #b8e35f; font-size: 0.76rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
-.discount-card h4 { font-size: clamp(1.05rem, 1.8vw, 1.3rem); }
-.discount-card-motto { margin-top: 1rem; color: #eef8e7; font-size: 0.92rem; font-style: italic; font-weight: 600; }
-.discount-duration { margin: 0.55rem 0 1rem; min-height: 3.2em; color: rgba(245, 250, 233, 0.68); font-size: 0.84rem; }
-.discount-rates { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.55rem; }
-.discount-rates span { display: grid; gap: 0.15rem; padding: 0.75rem 0.55rem; border-radius: 12px; background: rgba(5, 14, 7, 0.45); text-align: center; }
-.discount-rates small { color: rgba(245, 250, 233, 0.68); font-size: 0.72rem; }
-.discount-rates strong { color: #b8e35f; font-size: clamp(1.1rem, 2vw, 1.45rem); }
-.discount-action { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 1.25rem; margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid rgba(245, 250, 233, 0.12); }
-.discount-action > div { display: grid; gap: 0.2rem; }
-.discount-action strong { color: var(--white); font-size: 1rem; }
-.discount-action span { color: rgba(245, 250, 233, 0.68); font-size: 0.86rem; }
-.discount-cta { flex: 0 0 auto; }
+.discount-card::before {
+	content: "";
+	position: absolute;
+	inset: auto -12% -42% 18%;
+	height: 68%;
+	border-radius: 50%;
+	background: radial-gradient(circle, rgba(175, 208, 150, 0.14), transparent 68%);
+	pointer-events: none;
+}
+
+.discount-card.nextgen {
+	background:
+		radial-gradient(circle at 16% 10%, rgba(184, 227, 95, 0.16), transparent 26%),
+		linear-gradient(145deg, rgba(184, 227, 95, 0.14), rgba(255, 255, 255, 0.035)),
+		rgba(11, 24, 14, 0.62);
+}
+
+.discount-card-top {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	gap: 0.95rem;
+}
+
+.discount-icon {
+	position: relative;
+	display: grid;
+	place-items: center;
+	flex: 0 0 52px;
+	width: 52px;
+	height: 52px;
+	overflow: hidden;
+	border: 1px solid rgba(245, 250, 233, 0.24);
+	border-radius: 16px;
+	background:
+		linear-gradient(145deg, rgba(220, 232, 212, 0.98), rgba(175, 208, 150, 0.84));
+	color: var(--forest);
+	font-size: 1rem;
+	font-weight: 950;
+	box-shadow:
+		0 12px 26px rgba(0, 0, 0, 0.18),
+		inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+.discount-icon::before {
+	content: "";
+	position: absolute;
+	inset: 8px;
+	border: 1px solid rgba(36, 74, 44, 0.24);
+	border-radius: 12px;
+}
+
+.discount-icon span {
+	position: relative;
+	z-index: 1;
+	letter-spacing: 0.04em;
+}
+
+.discount-icon-student::after {
+	content: "";
+	position: absolute;
+	right: 9px;
+	bottom: 10px;
+	width: 20px;
+	height: 11px;
+	border-radius: 2px 16px 2px 16px;
+	background: rgba(36, 74, 44, 0.28);
+	transform: rotate(-18deg);
+}
+
+.discount-icon-nextgen::after {
+	content: "";
+	position: absolute;
+	left: 9px;
+	bottom: 10px;
+	width: 20px;
+	height: 11px;
+	border-radius: 16px 2px 16px 2px;
+	background: rgba(36, 74, 44, 0.28);
+	transform: rotate(18deg);
+}
+
+.discount-label {
+	color: #b8e35f;
+	font-size: 0.72rem;
+	font-weight: 900;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+}
+
+.discount-card h4 {
+	font-size: clamp(1.1rem, 1.9vw, 1.45rem);
+	line-height: 1.1;
+}
+
+.discount-card-motto {
+	position: relative;
+	z-index: 1;
+	margin-top: 1.05rem;
+	color: #f3faef;
+	font-size: clamp(0.95rem, 1.35vw, 1.06rem);
+	font-style: italic;
+	font-weight: 750;
+	line-height: 1.5;
+}
+
+.discount-duration {
+	position: relative;
+	z-index: 1;
+	margin: 0.55rem 0 1.15rem;
+	min-height: 3.1em;
+	color: rgba(245, 250, 233, 0.72);
+	font-size: 0.88rem;
+	line-height: 1.45;
+}
+
+.discount-rates {
+	position: relative;
+	z-index: 1;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 0.58rem;
+	margin-top: auto;
+}
+
+.discount-rates span {
+	display: grid;
+	gap: 0.18rem;
+	padding: 0.78rem 0.55rem;
+	border: 1px solid rgba(245, 250, 233, 0.12);
+	border-radius: 16px;
+	background:
+		linear-gradient(145deg, rgba(245, 250, 233, 0.08), rgba(245, 250, 233, 0.025)),
+		rgba(5, 14, 7, 0.48);
+	text-align: center;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.discount-rates small {
+	color: rgba(245, 250, 233, 0.68);
+	font-size: 0.7rem;
+	font-weight: 850;
+	letter-spacing: 0.02em;
+}
+
+.discount-rates strong {
+	color: #b8e35f;
+	font-size: clamp(1.2rem, 2.3vw, 1.7rem);
+	line-height: 1;
+}
+
+.discount-action {
+	position: relative;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	margin-top: 1.25rem;
+	padding: 1.05rem 1.15rem;
+	border: 1px solid rgba(245, 250, 233, 0.14);
+	border-radius: 18px;
+	background:
+		linear-gradient(145deg, rgba(245, 250, 233, 0.08), rgba(245, 250, 233, 0.03)),
+		rgba(7, 22, 13, 0.42);
+}
+
+.discount-action::before {
+	content: "";
+	flex: 0 0 0.52rem;
+	align-self: stretch;
+	border-radius: 99px;
+	background: linear-gradient(180deg, #dce8d4, #b8e35f);
+	box-shadow: 0 0 18px rgba(184, 227, 95, 0.24);
+}
+
+.discount-action > div {
+	display: grid;
+	gap: 0.24rem;
+}
+
+.discount-action strong {
+	color: var(--white);
+	font-size: clamp(1rem, 1.6vw, 1.2rem);
+	line-height: 1.35;
+}
+
+.discount-action span {
+	color: rgba(245, 250, 233, 0.72);
+	font-size: 0.88rem;
+	line-height: 1.5;
+}
 
 .plans-notes p {
 	display: grid;
@@ -1416,17 +1825,28 @@ main {
 	.language-switcher {
 		gap: 0.25rem;
 		min-height: 38px;
-		padding: 0.18rem 0.28rem 0.18rem 0.5rem;
+		padding: 0.18rem;
 	}
 
 	.language-switcher-label {
 		display: none;
 	}
 
-	.language-select {
-		min-width: 4.85rem;
-		min-height: 30px;
-		padding-inline: 0.42rem;
+	.language-button {
+		min-height: 32px;
+		padding-inline: 0.48rem 0.58rem;
+		gap: 0.38rem;
+	}
+
+	.language-menu {
+		right: -0.35rem;
+		min-width: 12.2rem;
+	}
+
+	.flag-icon {
+		flex-basis: 22px;
+		width: 22px;
+		height: 15px;
 	}
 
 	.hero-section {
@@ -1634,8 +2054,8 @@ main {
 	.discount-grid { grid-template-columns: 1fr; }
 	.discount-duration { min-height: 0; }
 	.future-graphic { width: 80%; opacity: 0.42; }
-	.discount-action { align-items: stretch; flex-direction: column; }
-	.discount-cta { width: 100%; }
+	.discount-action { align-items: stretch; }
+	.discount-action::before { flex-basis: 0.4rem; }
 }
 
 @media (max-width: 420px) {

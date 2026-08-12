@@ -28,20 +28,26 @@
 			<a href="index.html#plans">Πλάνα</a>
 		</nav>
 		<div class="header-actions">
-			<label class="language-switcher" aria-label="Language selector">
+			<div class="language-switcher" data-language-switcher role="group" aria-label="Language selector">
 				<span class="language-switcher-label">Lang</span>
-				<select class="language-select" data-language-select aria-label="Language">
-					<option value="el">🇬🇷 EL</option>
-					<option value="bg">🇧🇬 BG</option>
-					<option value="sq">🇦🇱 SQ</option>
-					<option value="tr">🇹🇷 TR</option>
-					<option value="ro">🇷🇴 RO</option>
-					<option value="nl">🇳🇱 NL</option>
-					<option value="fr">🇫🇷 FR</option>
-					<option value="es">🇪🇸 ES</option>
-					<option value="it">🇮🇹 IT</option>
+				<select class="language-select" data-language-select aria-label="Language" aria-hidden="true" tabindex="-1">
+					<option value="el">EL</option>
+					<option value="bg">BG</option>
+					<option value="sq">SQ</option>
+					<option value="tr">TR</option>
+					<option value="ro">RO</option>
+					<option value="nl">NL</option>
+					<option value="fr">FR</option>
+					<option value="es">ES</option>
+					<option value="it">IT</option>
 				</select>
-			</label>
+				<button class="language-button" type="button" aria-haspopup="listbox" aria-expanded="false" data-language-button>
+					<span class="flag-icon flag-el" data-language-flag aria-hidden="true"></span>
+					<span class="language-current-code" data-language-code>EL</span>
+					<span class="language-chevron" aria-hidden="true"></span>
+				</button>
+				<div class="language-menu" role="listbox" data-language-menu></div>
+			</div>
 			<a class="btn btn-small btn-outline" href="contact.html">Επικοινωνία</a>
 		</div>
 	</header>

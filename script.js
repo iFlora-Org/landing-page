@@ -44,6 +44,133 @@ window.addEventListener('iflora-language-change', () => {
 	setMobileMenu(header.classList.contains('nav-open'));
 });
 
+const languageNames = {
+	el: 'Ελληνικά',
+	bg: 'Български',
+	sq: 'Shqip',
+	tr: 'Türkçe',
+	ro: 'Română',
+	nl: 'Nederlands',
+	fr: 'Français',
+	es: 'Español',
+	it: 'Italiano'
+};
+
+const languageSwitchers = document.querySelectorAll('[data-language-switcher]');
+
+function closeLanguageSwitcher(switcher) {
+	const button = switcher?.querySelector('[data-language-button]');
+	switcher?.classList.remove('is-open');
+	button?.setAttribute('aria-expanded', 'false');
+}
+
+function syncLanguageSwitcher(switcher, language) {
+	if (!switcher) return;
+	const normalizedLanguage = languageNames[language] ? language : 'el';
+	const button = switcher.querySelector('[data-language-button]');
+	const flag = switcher.querySelector('[data-language-flag]');
+	const code = switcher.querySelector('[data-language-code]');
+	const menu = switcher.querySelector('[data-language-menu]');
+
+	if (flag) {
+		flag.className = `flag-icon flag-${normalizedLanguage}`;
+	}
+
+	if (code) {
+		code.textContent = normalizedLanguage.toUpperCase();
+	}
+
+	button?.setAttribute('aria-label', languageNames[normalizedLanguage]);
+
+	menu?.querySelectorAll('[data-language-option]').forEach((option) => {
+		const isActive = option.dataset.languageOption === normalizedLanguage;
+		option.classList.toggle('is-active', isActive);
+		option.setAttribute('aria-selected', String(isActive));
+		option.tabIndex = isActive ? 0 : -1;
+	});
+}
+
+function setupLanguageSwitchers() {
+	languageSwitchers.forEach((switcher) => {
+		const select = switcher.querySelector('[data-language-select]');
+		const button = switcher.querySelector('[data-language-button]');
+		const menu = switcher.querySelector('[data-language-menu]');
+		if (!select || !button || !menu) return;
+
+		const options = Array.from(select.options).map((option) => option.value).filter(Boolean);
+		menu.innerHTML = options.map((language) => `
+			<button class="language-option" type="button" role="option" data-language-option="${language}" aria-selected="false">
+				<span class="flag-icon flag-${language}" aria-hidden="true"></span>
+				<span class="language-option-code">${language.toUpperCase()}</span>
+				<span class="language-option-name">${languageNames[language] || language.toUpperCase()}</span>
+			</button>
+		`).join('');
+
+		button.addEventListener('click', () => {
+			const isOpen = switcher.classList.toggle('is-open');
+			button.setAttribute('aria-expanded', String(isOpen));
+			if (isOpen) {
+				menu.querySelector('.language-option.is-active')?.focus();
+			}
+		});
+
+		menu.querySelectorAll('[data-language-option]').forEach((option) => {
+			option.addEventListener('click', () => {
+				const language = option.dataset.languageOption;
+				if (!language) return;
+				select.value = language;
+				select.dispatchEvent(new Event('change', { bubbles: true }));
+				closeLanguageSwitcher(switcher);
+				button.focus();
+			});
+		});
+
+		switcher.addEventListener('keydown', (event) => {
+			const menuOptions = Array.from(menu.querySelectorAll('[data-language-option]'));
+			const activeIndex = menuOptions.indexOf(document.activeElement);
+
+			if (event.key === 'Escape') {
+				closeLanguageSwitcher(switcher);
+				button.focus();
+			}
+
+			if (event.key === 'ArrowDown') {
+				event.preventDefault();
+				if (!switcher.classList.contains('is-open')) {
+					switcher.classList.add('is-open');
+					button.setAttribute('aria-expanded', 'true');
+				}
+				menuOptions[(activeIndex + 1 + menuOptions.length) % menuOptions.length]?.focus();
+			}
+
+			if (event.key === 'ArrowUp') {
+				event.preventDefault();
+				if (!switcher.classList.contains('is-open')) {
+					switcher.classList.add('is-open');
+					button.setAttribute('aria-expanded', 'true');
+				}
+				menuOptions[(activeIndex - 1 + menuOptions.length) % menuOptions.length]?.focus();
+			}
+		});
+
+		syncLanguageSwitcher(switcher, select.value || 'el');
+	});
+}
+
+setupLanguageSwitchers();
+
+document.addEventListener('click', (event) => {
+	languageSwitchers.forEach((switcher) => {
+		if (!switcher.contains(event.target)) closeLanguageSwitcher(switcher);
+	});
+});
+
+window.addEventListener('iflora-language-change', (event) => {
+	languageSwitchers.forEach((switcher) => {
+		syncLanguageSwitcher(switcher, event.detail?.language || 'el');
+	});
+});
+
 if ('IntersectionObserver' in window && revealItems.length) {
 	const revealObserver = new IntersectionObserver((entries) => {
 		entries.forEach((entry) => {
