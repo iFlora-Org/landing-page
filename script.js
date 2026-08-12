@@ -46,6 +46,7 @@ window.addEventListener('iflora-language-change', () => {
 
 const languageNames = {
 	el: 'Ελληνικά',
+	en: 'English',
 	bg: 'Български',
 	sq: 'Shqip',
 	tr: 'Türkçe',
