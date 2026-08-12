@@ -1,13 +1,8 @@
 
 const IFLORA_LANG_STORAGE_KEY = 'iflora-language';
-const IFLORA_SUPPORTED_LANGUAGES = ['el', 'en', 'bg', 'sq', 'tr', 'ro', 'nl', 'fr', 'es', 'it'];
+const IFLORA_SUPPORTED_LANGUAGES = ['el', 'bg', 'sq', 'tr', 'ro', 'nl', 'fr', 'es', 'it'];
 const IFLORA_LANGUAGE_META = {
 	el: { htmlLang: 'el', title: null, description: null },
-	en: {
-		htmlLang: 'en',
-		title: 'iFlora | Smart Agriculture & Greenhouse IoT',
-		description: 'Smart management for greenhouses and agricultural facilities with sensors, automation, AI insights and remote control.'
-	},
 	bg: {
 		htmlLang: 'bg',
 		title: 'iFlora | Интелигентно земеделие и IoT за оранжерии',
@@ -51,7 +46,6 @@ const IFLORA_LANGUAGE_META = {
 };
 
 const IFLORA_TRANSLATIONS = {
-	en: {},
 	bg: {
 		'iFlora | Smart Agriculture & Greenhouse IoT': 'iFlora | Интелигентно земеделие и IoT за оранжерии',
 		'Ευφυής διαχείριση θερμοκηπίων και αγροτικών εγκαταστάσεων με αισθητήρες, αυτοματισμούς, AI insights και απομακρυσμένο έλεγχο.': 'Интелигентно управление на оранжерии и земеделски обекти със сензори, автоматизации, AI insights и дистанционен контрол.',
@@ -735,8 +729,6 @@ IFLORA_EXTRA_TRANSLATION_ROWS.forEach(([source, nl, fr, es, it]) => {
 	IFLORA_TRANSLATIONS.es[source] = es;
 	IFLORA_TRANSLATIONS.it[source] = it;
 });
-
-Object.assign(IFLORA_TRANSLATIONS.en, window.IFLORA_EN_TRANSLATIONS || {});
 
 function iFloraDecodeHtml(value) {
 	const textarea = document.createElement('textarea');
