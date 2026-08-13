@@ -8,19 +8,39 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+	<link rel="icon" type="image/png" href="media/iflora.png">
 	<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 	<div class="identity-bg" id="identity-bg"></div>
-	<button id="theme-toggle" class="theme-debug-toggle" aria-label="Toggle theme">Switch to Light Mode</button>
 
 	<div class="page-content">
 		<div class="noise-overlay" aria-hidden="true"></div>
 
 		<!-- Navigation -->
-		<nav class="navbar" id="navbar" style="justify-content: flex-start; padding: 1rem 2rem;">
+		<nav class="navbar" id="navbar" style="justify-content: space-between; padding: 1rem 2rem;">
 			<a href="index.html" class="btn primary" style="text-decoration: none;">&larr; Επιστροφή</a>
+			<div class="language-switcher contact-language-switcher" data-language-switcher role="group" aria-label="Language selector">
+				<span class="language-switcher-label">Lang</span>
+				<select class="language-select" data-language-select aria-label="Language" aria-hidden="true" tabindex="-1">
+					<option value="el">EL</option>
+					<option value="bg">BG</option>
+					<option value="sq">SQ</option>
+					<option value="tr">TR</option>
+					<option value="ro">RO</option>
+					<option value="nl">NL</option>
+					<option value="fr">FR</option>
+					<option value="es">ES</option>
+					<option value="it">IT</option>
+				</select>
+				<button class="language-button" type="button" aria-haspopup="listbox" aria-expanded="false" data-language-button>
+					<span class="flag-icon flag-el" data-language-flag aria-hidden="true"></span>
+					<span class="language-current-code" data-language-code>EL</span>
+					<span class="language-chevron" aria-hidden="true"></span>
+				</button>
+				<div class="language-menu" role="listbox" data-language-menu></div>
+			</div>
 		</nav>
 
 		<main style="min-height: 85vh; display: flex; align-items: center; justify-content: center; padding: 2rem; margin-top: 5rem;">
@@ -48,8 +68,17 @@
 						<label for="plan" style="margin-bottom: 0.5rem; font-weight: 500; color: var(--text);">Επιλογή Πλάνου</label>
 						<select id="plan" name="plan" style="padding: 1rem; border-radius: 12px; border: 1px solid rgba(175, 208, 154, 0.3); background: rgba(0, 0, 0, 0.2); color: var(--text); font-family: inherit; font-size: 1rem;">
 							<option value="none">Χωρίς επιλογή (Μόνο Ερώτηση)</option>
-							<option value="Standard Growth">Gold Membership</option>
-							<option value="Elite">Platinum Membership</option>
+							<option value="Beginner">Beginner</option>
+							<option value="Standard">Standard</option>
+							<option value="Professional">Professional</option>
+						</select>
+					</div>
+					<div class="form-group" style="display: flex; flex-direction: column; text-align: left;">
+						<label for="discount" style="margin-bottom: 0.5rem; font-weight: 500; color: var(--text);">Κατηγορία Έκπτωσης</label>
+						<select id="discount" name="discount" style="padding: 1rem; border-radius: 12px; border: 1px solid rgba(175, 208, 154, 0.3); background: rgba(0, 0, 0, 0.2); color: var(--text); font-family: inherit; font-size: 1rem;">
+							<option value="none">Χωρίς ειδική έκπτωση</option>
+							<option value="Student">Student — φοιτητές</option>
+							<option value="iFlora NextGen">iFlora NextGen — μη φοιτητές κάτω των 30</option>
 						</select>
 					</div>
 					<div class="form-group" style="display: flex; flex-direction: column; text-align: left;">
@@ -61,50 +90,23 @@
 			</section>
 		</main>
 
-		<div class="footer-shell" style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 0.5rem; padding: 1rem 0; text-align: center;">
+		<div class="footer-shell site-footer contact-page-footer">
 			<img src="media/iflora2.png" alt="iFlora Logo" style="height: 16px; width: auto; opacity: 0.8;">
-			<p style="color: var(--text-muted); margin: 0; font-size: 0.85rem;">© 2026 iFlora. All rights reserved.</p>
+			<div class="footer-copy">
+				<p>© 2026 iFlora. All rights reserved.</p>
+				<div class="footer-contact" aria-label="Στοιχεία επικοινωνίας">
+					<a href="mailto:info@iflora.gr">info@iflora.gr</a>
+					<span aria-hidden="true">|</span>
+					<a href="tel:+306986650139">6986650139</a>
+					<span aria-hidden="true">|</span>
+					<a href="politiki-dedomenon.html">Πολιτική Δεδομένων</a>
+				</div>
+			</div>
 		</div>
 	</div>
 
+	<script src="i18n.js"></script>
 	<script src="script.js"></script>
-	<script>
-		// Ensure background colors adapt for the form based on theme
-		const initFormTheme = () => {
-			const isLight = document.body.classList.contains('light-theme');
-			const form = document.querySelector('.contact-form');
-			const inputs = document.querySelectorAll('.contact-form input, .contact-form textarea, .contact-form select');
-			
-			if (isLight) {
-				form.style.background = 'rgba(0, 0, 0, 0.04)';
-				form.style.borderColor = 'rgba(0, 0, 0, 0.08)';
-				inputs.forEach(input => {
-					input.style.background = 'rgba(255, 255, 255, 0.6)';
-					input.style.borderColor = 'rgba(0, 0, 0, 0.1)';
-				});
-			} else {
-				form.style.background = 'rgba(255, 255, 255, 0.03)';
-				form.style.borderColor = 'rgba(255, 255, 255, 0.08)';
-				inputs.forEach(input => {
-					input.style.background = 'rgba(0, 0, 0, 0.2)';
-					input.style.borderColor = 'rgba(175, 208, 154, 0.3)';
-				});
-			}
-		};
-
-		const themeObserver = new MutationObserver((mutations) => {
-			mutations.forEach((mutation) => {
-				if (mutation.attributeName === 'class') {
-					initFormTheme();
-				}
-			});
-		});
-		
-		themeObserver.observe(document.body, { attributes: true });
-		
-		// Trigger once on load
-		initFormTheme();
-	</script>
 </body>
 
 </html>
