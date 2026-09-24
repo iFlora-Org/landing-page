@@ -1,0 +1,6 @@
+# Ignore macOS system files
+.DS_Store
+.DS_*/
+
+# Ignore Codex directories or files
+.codex/

@@ -12,8 +12,9 @@
             box-sizing: border-box;
         }
 
+        html,
         body {
-            background: #000;
+            background: transparent;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -24,8 +25,8 @@
 
         #wrap {
             position: relative;
-            width: min(90vw, 90vh);
-            height: min(90vw, 90vh);
+            width: min(112vw, 112vh);
+            height: min(112vw, 112vh);
         }
 
         canvas {
@@ -35,6 +36,7 @@
         }
 
         #label {
+            display: none;
             position: absolute;
             bottom: -40px;
             left: 50%;
@@ -91,7 +93,7 @@
                     baseR: r,
                     noiseOff: Math.random() * 100,
                     speed: 0.3 + Math.random() * 0.4,
-                    size: 1.6 + Math.random() * 2.0,
+                    size: 1.2 + Math.random() * 1.5,
                     // current rendered position
                     x: 0, y: 0,
                     // shape target (set when forming)
@@ -106,131 +108,101 @@
         const canvas = document.getElementById('c');
         const ctx = canvas.getContext('2d');
 
-        let W, H, cx, cy, baseBlob;
+        let W, H, cx, cy, baseBlob, shapeScale;
         function resize() {
             const dpr = window.devicePixelRatio || 1;
             const rect = canvas.getBoundingClientRect();
             W = canvas.width = rect.width * dpr;
             H = canvas.height = rect.height * dpr;
             cx = W / 2; cy = H / 2;
-            baseBlob = Math.min(W, H) * 0.38;
+            baseBlob = Math.min(W, H) * 0.54;
+            shapeScale = baseBlob * 1.1;
+            shapeTargets = buildShapeTargets();
         }
-        resize();
         window.addEventListener('resize', resize);
 
         const dots = makeDots();
 
-        // ── Phase machine ──────────────────────────────────────────────────────────────
-        // Phases:  BLOB → FORMING → SHAPE → DISPERSING → BLOB → …
-        // Durations (ms):
-        const DUR_BLOB = 3500;   // free blob display
-        const DUR_FORMING = 2200;   // morphing into shape
-        const DUR_SHAPE = 3800;   // holding shape
-        const DUR_DISPERSING = 1800;   // shape exploding back
-
-        let phase = 'BLOB';
-        let phaseStart = performance.now();
-
-        function nextPhase(now) {
-            if (phase === 'BLOB') { phase = 'FORMING'; phaseStart = now; }
-            else if (phase === 'FORMING') { phase = 'SHAPE'; phaseStart = now; }
-            else if (phase === 'SHAPE') { phase = 'DISPERSING'; phaseStart = now; }
-            else if (phase === 'DISPERSING') { phase = 'BLOB'; phaseStart = now; }
-        }
+        let scrollBreakProgress = 0;
 
         // Shape targets in canvas pixels — recomputed from normalized SHAPE_PTS
         // The logo has a slight margin; we want to fit inside the baseBlob radius
         function buildShapeTargets() {
             // The shape spans 0..1 in both axes. Center it.
-            const scale = baseBlob * 1.7; // how big the shape renders
             return SHAPE_PTS.map(([nx, ny]) => ({
-                x: cx + (nx - 0.5) * scale,
-                y: cy + (ny - 0.5) * scale * (1137 / 1062), // preserve aspect ratio
+                x: cx + (nx - 0.5) * shapeScale,
+                y: cy + (ny - 0.5) * shapeScale * (1137 / 1062), // preserve aspect ratio
             }));
         }
 
         let shapeTargets = null;
+        resize();
+        dots.forEach((d) => {
+            const sp = shapeTargets[d.shapeIdx];
+            d.x = sp.x;
+            d.y = sp.y;
+        });
+
+        window.addEventListener('message', (event) => {
+            const data = event.data || {};
+            if (data.type !== 'iflora-blob-scroll') return;
+
+            scrollBreakProgress = Math.max(0, Math.min(1, Number(data.progress) || 0));
+        });
 
         // ── Animation ──────────────────────────────────────────────────────────────────
         let time = 0;
-        const AR = 180, AG = 230, AB = 180; // green accent
+        let renderedBreakProgress = 0;
+        const AR = 248, AG = 250, AB = 244; // white particles for video overlay
 
-        function blobPosition(d, t) {
+        function blobPosition(d, t, spreadFactor) {
             const angle = d.baseAngle + t * 0.04;
-            const nv = noise(Math.cos(angle) * 1.5, Math.sin(angle) * 1.5, t * d.speed + d.noiseOff);
-            const wobble = 1 + nv * 0.08 * (0.4 + d.baseR * 0.6);
-            const r = baseBlob * wobble;
+            const drift = t * d.speed * (1.2 + spreadFactor * 0.5) + d.noiseOff;
+            const nv = noise(Math.cos(angle) * 1.5, Math.sin(angle) * 1.5, drift);
+            const currentBaseR = baseBlob + spreadFactor * Math.max(W, H) * 0.72;
+            const wobble = 1 + nv * (0.06 + spreadFactor * 0.04) * (0.4 + d.baseR * 0.6);
+            const r = currentBaseR * wobble;
             return {
                 x: cx + Math.cos(angle) * r * d.baseR,
                 y: cy + Math.sin(angle) * r * d.baseR,
             };
         }
 
-        function frame(now) {
+        function frame() {
             requestAnimationFrame(frame);
             time += 0.005;
+            renderedBreakProgress += (scrollBreakProgress - renderedBreakProgress) * 0.085;
 
-            const elapsed = now - phaseStart;
-
-            // ── Phase transitions ──
-            if (phase === 'BLOB' && elapsed > DUR_BLOB) { shapeTargets = buildShapeTargets(); nextPhase(now); }
-            if (phase === 'FORMING' && elapsed > DUR_FORMING) nextPhase(now);
-            if (phase === 'SHAPE' && elapsed > DUR_SHAPE) nextPhase(now);
-            if (phase === 'DISPERSING' && elapsed > DUR_DISPERSING) nextPhase(now);
-
-            const t01 = Math.min(1, elapsed / {
-                BLOB: DUR_BLOB, FORMING: DUR_FORMING, SHAPE: DUR_SHAPE, DISPERSING: DUR_DISPERSING
-            }[phase]);
+            const breakProgress = Math.max(0, Math.min(1, renderedBreakProgress));
+            const shapeHold = 1 - breakProgress;
+            const spreadFactor = breakProgress;
+            const virtualScroll = breakProgress * H * 0.34;
 
             ctx.clearRect(0, 0, W, H);
 
             // ── Per-dot update ──
             for (let i = 0; i < dots.length; i++) {
                 const d = dots[i];
-                const bp = blobPosition(d, time);
-
-                let tx, ty; // where dot WANTS to be this frame
-
-                if (phase === 'BLOB') {
-                    tx = bp.x; ty = bp.y;
-                } else if (phase === 'FORMING') {
-                    const ease = easeInOut(t01);
-                    const sp = shapeTargets[d.shapeIdx];
-                    tx = bp.x + (sp.x - bp.x) * ease;
-                    ty = bp.y + (sp.y - bp.y) * ease;
-                } else if (phase === 'SHAPE') {
-                    // Subtle shimmer while holding shape
-                    const sp = shapeTargets[d.shapeIdx];
-                    const shimmer = Math.sin(time * 3 + d.noiseOff) * 1.5;
-                    tx = sp.x + shimmer; ty = sp.y + shimmer * 0.6;
-                } else { // DISPERSING
-                    const ease = easeIn(t01);
-                    const sp = shapeTargets[d.shapeIdx];
-                    tx = sp.x + (bp.x - sp.x) * ease;
-                    ty = sp.y + (bp.y - sp.y) * ease;
-                }
+                const bp = blobPosition(d, time, spreadFactor);
+                const sp = shapeTargets[d.shapeIdx];
+                const shimmer = Math.sin(time * 3 + d.noiseOff) * 1.5 * shapeHold;
+                const shapeX = sp.x + shimmer;
+                const shapeY = sp.y - virtualScroll + shimmer * 0.6;
+                const tx = bp.x + (shapeX - bp.x) * shapeHold;
+                const ty = bp.y + (shapeY - bp.y) * shapeHold;
 
                 // Smooth pursuit
-                const lerpFactor = phase === 'FORMING' ? 0.06 : phase === 'SHAPE' ? 0.12 : 0.05;
+                const lerpFactor = 0.1 + spreadFactor * 0.05;
                 d.x += (tx - d.x) * lerpFactor;
                 d.y += (ty - d.y) * lerpFactor;
 
-                // Alpha varies by phase
+                // Alpha fades with scroll so the mark breaks apart cleanly.
                 const centerBright = 1 - d.baseR * 0.55;
-                let alpha;
-                if (phase === 'BLOB') {
-                    alpha = centerBright * 0.6;
-                } else if (phase === 'FORMING') {
-                    alpha = centerBright * 0.6 + easeInOut(t01) * 0.35;
-                } else if (phase === 'SHAPE') {
-                    alpha = 0.7 + Math.sin(time * 2 + d.noiseOff * 0.3) * 0.15;
-                } else {
-                    alpha = (0.95 - easeOut(t01) * 0.4) * centerBright;
-                }
+                const fadeFactor = Math.max(0.28, 1 - breakProgress * 0.58);
+                const pulse = Math.sin(time * 2 + d.noiseOff * 0.3) * 0.15 * shapeHold;
+                const alpha = (0.55 + shapeHold * 0.35 + pulse) * centerBright * fadeFactor;
 
-                // Dot size pulses in SHAPE phase
-                let sz = d.size;
-                if (phase === 'SHAPE') sz *= 1 + Math.sin(time * 4 + i * 0.1) * 0.2;
+                const sz = d.size * (1 + shapeHold * Math.sin(time * 4 + i * 0.1) * 0.2);
 
                 ctx.beginPath();
                 ctx.arc(d.x, d.y, sz, 0, Math.PI * 2);
@@ -239,32 +211,33 @@
             }
 
             // ── Connection lines ──
-            ctx.lineWidth = 1.2;
-            const linkRange = phase === 'SHAPE' ? 38 : 50;
-            const linkAlphaMult = phase === 'SHAPE' ? 0.35 : 0.22;
-            for (let i = 0; i < dots.length; i++) {
-                const d1 = dots[i];
-                for (let j = i + 1; j < i + 6; j++) {
-                    const d2 = dots[j % dots.length];
-                    const dx = d1.x - d2.x, dy = d1.y - d2.y;
-                    const dist2 = dx * dx + dy * dy;
-                    if (dist2 < linkRange * linkRange) {
-                        const outerW = Math.pow(d1.baseR, 1.5);
-                        const a = (1 - Math.sqrt(dist2) / linkRange) * linkAlphaMult * outerW;
-                        ctx.beginPath();
-                        ctx.moveTo(d1.x, d1.y);
-                        ctx.lineTo(d2.x, d2.y);
-                        ctx.strokeStyle = `rgba(${AR},${AG},${AB},${a})`;
-                        ctx.stroke();
+            if (shapeHold > 0.1) {
+                ctx.lineWidth = 1.1;
+                const linkRange = 38;
+                for (let i = 0; i < dots.length; i += 3) {
+                    const d1 = dots[i];
+                    for (let j = i + 1; j < i + 4; j++) {
+                        const d2 = dots[j % dots.length];
+                        const dx = d1.x - d2.x, dy = d1.y - d2.y;
+                        const dist2 = dx * dx + dy * dy;
+                        if (dist2 < linkRange * linkRange) {
+                            const outerW = Math.pow(d1.baseR, 1.5);
+                            const a = (1 - Math.sqrt(dist2) / linkRange) * 0.35 * outerW * shapeHold;
+                            ctx.beginPath();
+                            ctx.moveTo(d1.x, d1.y);
+                            ctx.lineTo(d2.x, d2.y);
+                            ctx.strokeStyle = `rgba(${AR},${AG},${AB},${a})`;
+                            ctx.stroke();
+                        }
                     }
                 }
             }
 
             // ── Glow ──
-            const expand = phase === 'SHAPE' ? 1.05 + Math.sin(time * 1.5) * 0.03 : 1;
+            const expand = 1.05 + Math.sin(time * 1.5) * 0.03 * shapeHold;
             const glowR = baseBlob * expand * 1.3;
             const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowR);
-            const glowAlpha = phase === 'SHAPE' ? 0.08 : 0.04;
+            const glowAlpha = 0.08 * shapeHold + 0.025 * (1 - shapeHold);
             grd.addColorStop(0, `rgba(${AR},${AG},${AB},${glowAlpha})`);
             grd.addColorStop(1, `rgba(0,0,0,0)`);
             ctx.beginPath();
@@ -272,10 +245,10 @@
             ctx.fillStyle = grd;
             ctx.fill();
 
-            // ── Shape phase: extra bright inner glow ──
-            if (phase === 'SHAPE') {
+            // ── Logo hold: extra bright inner glow ──
+            if (shapeHold > 0.1) {
                 const innerGlow = ctx.createRadialGradient(cx, cy, 0, cx, cy, baseBlob * 0.7);
-                const ig = 0.04 + Math.sin(time * 2) * 0.02;
+                const ig = (0.04 + Math.sin(time * 2) * 0.02) * shapeHold;
                 innerGlow.addColorStop(0, `rgba(${AR},${AG},${AB},${ig})`);
                 innerGlow.addColorStop(1, `rgba(0,0,0,0)`);
                 ctx.beginPath();
